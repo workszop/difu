@@ -21,6 +21,8 @@ SRC = ROOT / "tools/out/assets/gen"
 DST = ROOT / "assets/gen"
 Q_NOISY, Q_PRED = 35, 50
 BUDGET_MB = 15.0
+# prompts shown in the app (the Colab run may contain more)
+KEEP_PROMPTS = ["kot", "latarnia", "owoce"]
 
 
 def load_manifest(path):
@@ -30,6 +32,8 @@ def load_manifest(path):
 
 def main():
     data = load_manifest(SRC / "cases.js")
+    data["prompts"] = [p for p in data["prompts"] if p["id"] in KEEP_PROMPTS]
+    data["cases"] = [c for c in data["cases"] if c["prompt_id"] in KEEP_PROMPTS]
     if DST.exists():
         shutil.rmtree(DST)
     DST.mkdir(parents=True)

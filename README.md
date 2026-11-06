@@ -10,7 +10,7 @@ Open `index.html` – no build step, no server, no API calls, works offline and 
 
 **Generowanie** – real per-step outputs of Stable Diffusion 1.5, precomputed. For every step:
 "Teraz" (the current noisy image) and "Co model przewiduje" (the model's guess of the final
-image, x0). 6 prompts; seed, guidance and steps switches; slider, play/pause, step strip.
+image, x0). 3 prompts (kot w kapeluszu, latarnia morska o zachodzie, miska z owocami); seed, guidance and steps switches; slider, play/pause, step strip.
 
 **Trening** – one training example on a real photo (add noise at t, the target is the noise);
 a tiny diffusion model (4,994 parameters, plain JS in `toy.js`) trained live in the browser on a
@@ -31,7 +31,7 @@ and copyright.
 | Guidance | low 2.0 / medium 7.5 / high 15.0 (at seed 11) |
 | Negative prompt | `blurry, low quality, watermark, text artifacts` |
 | Run | diffusers 0.42.1, torch 2.11, NVIDIA A100 (Colab), 2026-11-06 |
-| Size | 32 cases, 11.3 MB |
+| Size | 17 cases, 5.9 MB |
 
 Seed and guidance vary one at a time (not every seed × every guidance), which keeps the set under
 15 MB. `GRID = "full"` in the notebook makes all combinations at about twice the size.

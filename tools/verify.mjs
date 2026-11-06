@@ -98,17 +98,11 @@ if (ONLY === 'all' || ONLY === 'train') {
   d = await toy(page);
   check('live training under ~30 s', trainS < 32, `${trainS.toFixed(1)} s`);
   check('loss after training < loss at start', +d.loss < +d.lossStart, `${d.lossStart} → ${d.loss}`);
-  check('epoch reached 600', d.epoch === '600');
+  check('all epochs done', d.epoch === String(await page.evaluate(() => TOY_EPOCHS)), d.epoch);
   await page.waitForFunction(() => document.querySelector('#toy').dataset.phase === 'done', null, { timeout: 15000 });
   d = await toy(page); check('sampling done, t=0', d.sampleT === '0');
-  // quality: fraction of points near the shape
-  const near = await page.evaluate(() => {
-    // read sampler points from script scope
-    const pts = toyRun.sampler.points, ref = Toy.sampleShape(state.toy.shape, 2000, 99); let ok = 0;
-    for (let i = 0; i < pts.length; i += 2) { let b = 9; for (let j = 0; j < ref.length; j += 2) b = Math.min(b, (pts[i] - ref[j]) ** 2 + (pts[i + 1] - ref[j + 1]) ** 2); if (Math.sqrt(b) < 0.1) ok++; }
-    return ok / (pts.length / 2);
-  });
-  check('≥80% sampled points on the shape', near >= 0.8, (100 * near).toFixed(0) + '%');
+  d = await toy(page); check('≥90% generated dots on the shape (data-quality)', +d.quality >= 90, d.quality + '%');
+  check('quality rose during training', await page.evaluate(() => state.toy.quality.length >= 10 && state.toy.quality[0][1] < 0.2));
   await page.locator('#toy').scrollIntoViewIfNeeded();
   await page.screenshot({ path: OUT + 'app_train_1440_toy.png' });
   // pretrained fish

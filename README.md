@@ -13,8 +13,8 @@ Open `index.html` – no build step, no server, no API calls, works offline and 
 image, x0). 3 prompts (kot w kapeluszu, latarnia morska o zachodzie, miska z owocami); seed, guidance and steps switches; slider, play/pause, step strip.
 
 **Trening** – one training example on a real photo (add noise at t, the target is the noise);
-a tiny diffusion model (4,994 parameters, plain JS in `toy.js`) trained live in the browser on a
-2-D point shape (heart / fish / letter Q), with a loss curve and 1000 points sampled from noise;
+a tiny diffusion model (9,154 parameters, 3-layer MLP in plain JS in `toy.js`) trained live in the browser on a
+2-D dot shape (heart / fish / letter Q). A table maps it to Stable Diffusion (one dot = one example, the shape = what correct examples look like). During training a preview every 25 epochs shows what the model would generate, with two charts: the loss (flattens fast, the noise is random so it cannot reach zero) and the share of dots on the shape (keeps rising, ~1% → 94-97%). Then 1000 dots are generated from noise;
 pre-trained weights as a fallback for slow devices; a sourced scale table; a fold on training data
 and copyright.
 
@@ -51,7 +51,7 @@ Seed and guidance vary one at a time (not every seed × every guidance), which k
 
 `tools/verify.mjs` checks the DOM contract and invariants with Playwright: start at noise, last
 step shows the final image, arrows / space, seed / guidance / steps switches, every case decodes,
-PL/EN, live training < ~30 s with loss falling and ≥ 80 % of points on the shape, pre-trained
+PL/EN, live training < ~30 s with loss falling, ≥ 90 % of dots on the shape and the share rising during training, pre-trained
 fallback, 390 px without horizontal scroll, reduced motion shows the final state at once, offline
 over http and `file://`.
 

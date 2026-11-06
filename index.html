@@ -107,11 +107,11 @@ kbd { font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--li
 .bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 18px; }
 .grp { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 /* image height ≈ viewport minus the chrome above and the strip below, so a projector shows everything at once */
-.stage { display: grid; grid-template-columns: minmax(0, 1fr) 200px minmax(0, 1fr); gap: 24px; align-items: center; max-width: max(800px, calc(2 * (100vh - 560px) + 248px)); margin: 0 auto; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 200px minmax(0, 1fr); gap: 24px; align-items: center; max-width: max(800px, calc(2 * (100vh - 590px) + 248px)); margin: 0 auto; }
 .stage figure { margin: 0; min-width: 0; }
-.stage figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; min-width: 0; }
-.stage figcaption .ov { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.stage figcaption b { white-space: nowrap; font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--ink); }
+.stage figcaption { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; min-width: 0; min-height: 4.4em; }
+.stage figcaption b { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.stage figcaption span { font-size: 15px; line-height: 1.4; color: var(--ink-2); }
 .frame { position: relative; aspect-ratio: 1; border-radius: var(--r-md); overflow: hidden; background: var(--paper-3); border: 1px solid var(--line-2); }
 .frame img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .frame .empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--ink-2); }
@@ -120,10 +120,10 @@ kbd { font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--li
 .meter { width: 100%; height: 10px; border-radius: var(--r-pill); background: var(--paper-3); overflow: hidden; margin: 6px 0 10px; }
 .meter span { display: block; height: 100%; background: var(--ink); border-radius: var(--r-pill); transition: width .15s; }
 .arrow { font: 700 34px var(--font-display); color: var(--ink-3); margin: 6px 0 10px; }
-.scrub { max-width: max(800px, calc(2 * (100vh - 560px) + 248px)); margin: 12px auto 0; display: flex; align-items: center; gap: 14px; }
+.scrub { max-width: max(800px, calc(2 * (100vh - 590px) + 248px)); margin: 12px auto 0; display: flex; align-items: center; gap: 14px; }
 .scrub input { flex: 1; }
 input[type=range] { accent-color: var(--ink); width: 100%; height: 28px; cursor: pointer; }
-.strip { display: flex; gap: 4px; overflow-x: auto; padding: 8px 2px 6px; max-width: max(800px, calc(2 * (100vh - 560px) + 248px)); margin: 0 auto; }
+.strip { display: flex; gap: 4px; overflow-x: auto; padding: 8px 2px 6px; max-width: max(800px, calc(2 * (100vh - 590px) + 248px)); margin: 0 auto; }
 .thumb { flex: 1 0 26px; max-width: 64px; padding: 0; border: 2px solid transparent; border-radius: 8px; background: none; cursor: pointer; line-height: 0; }
 .thumb img { width: 100%; aspect-ratio: 1; border-radius: 6px; display: block; background: var(--paper-3); }
 .thumb.active { border-color: var(--ink); }
@@ -182,8 +182,9 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
   .sec-head h2 { flex: 1; min-width: 0; font-size: 23px; }
   .sec-head::after { flex: 1 0 100%; }
   .stage { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stage figcaption { min-height: 4.8em; }
   .stage figcaption b { font-size: 16px; }
-  .stage figcaption .ov { display: none; }
+  .stage figcaption span { font-size: 13px; }
   .mid { grid-column: 1 / -1; order: -1; flex-direction: row; flex-wrap: wrap; justify-content: space-between; text-align: left; gap: 8px 14px; }
   .mid .meter, .arrow { display: none; }
   .big { font-size: 34px; }
@@ -234,7 +235,7 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
 
     <div class="stage">
       <figure>
-        <figcaption><b data-i18n="now"></b></figcaption>
+        <figcaption><b data-i18n="now"></b><span data-i18n="nowSub"></span></figcaption>
         <div class="frame"><img id="img-now" width="320" height="320" alt=""></div>
       </figure>
       <div class="mid">
@@ -245,7 +246,7 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
         <button type="button" class="btn" id="play"></button>
       </div>
       <figure>
-        <figcaption><b data-i18n="pred"></b></figcaption>
+        <figcaption><b data-i18n="pred"></b><span data-i18n="predSub"></span></figcaption>
         <div class="frame"><img id="img-pred" width="320" height="320" alt=""><div class="empty" id="pred-empty" data-i18n="predEmpty"></div></div>
       </figure>
     </div>
@@ -395,18 +396,18 @@ const T = {
     viewNav: 'Widok', tabGen: 'Generowanie', tabTrain: 'Trening',
     genTitle: 'Od szumu do obrazu',
     genLead: 'Model nie rysuje. Zaczyna od czystego szumu i w każdym kroku usuwa jego kawałek.',
-    lblPrompt: 'Opis', lblSeed: 'Ziarno', lblGuid: 'Siła opisu', lblSteps: 'Kroki',
+    lblPrompt: 'Opis', lblSeed: 'Szum startowy', lblGuid: 'Siła opisu', lblSteps: 'Kroki',
     guid_low: 'niska', guid_mid: 'średnia', guid_high: 'wysoka',
-    now: 'Teraz', pred: 'Co model przewiduje',
+    now: 'Teraz', nowSub: 'Obraz po tym kroku – z każdym krokiem ma mniej szumu.', pred: 'Co model przewiduje', predSub: 'Jak model już teraz wyobraża sobie gotowy obraz.',
     predEmpty: 'Krok 0: czysty szum, model jeszcze nic nie zgadł',
     step: 'Krok', noiseLeft: 'Zostało szumu',
     play: 'Odtwórz', pause: 'Pauza', replay: 'Od nowa',
     stepSlider: 'Krok odszumiania', stripLabel: 'Wszystkie kroki – kliknij, aby przejść',
     kStep: 'krok', kPlay: 'start / pauza',
-    ahaSeed: 'Ziarno: ten sam opis, inny obraz.',
+    ahaSeed: 'Szum startowy: ten sam opis, inny szum na start – inny obraz.',
     ahaGuid: 'Siła opisu: jak mocno model słucha opisu.',
     ahaSteps: 'Kroki: mniej kroków = szybciej, ale gorzej.',
-    genHint: 'Ziarno i siłę opisu zmieniamy osobno: zmiana ziarna wraca do średniej siły, zmiana siły – do ziarna 1. Kroki 4 / 20 / 50 są przygotowane dla opisu „kot w kapeluszu”.',
+    genHint: 'Szum startowy to losowy obraz, od którego model zaczyna (w programach: „seed”). Szum startowy i siłę opisu zmieniamy osobno: zmiana szumu wraca do średniej siły, zmiana siły – do szumu 1. Kroki 4 / 20 / 50 są przygotowane dla opisu „kot w kapeluszu”.',
     stepsOnly: 'tylko dla „kot w kapeluszu”',
     live: (s, n, p) => `Krok ${s} z ${n}, zostało ${p}% szumu`,
     trTitle: 'Jak model się uczy',
@@ -453,7 +454,7 @@ const T = {
     data2: 'Autorzy tych obrazów nie byli pytani o zgodę. Stąd spory sądowe o prawa autorskie, np. Getty Images przeciw Stability AI czy grupa artystów przeciw twórcom generatorów.',
     data3: 'W UE od 2 sierpnia 2025 r. dostawcy modeli ogólnego przeznaczenia muszą mieć politykę przestrzegania praw autorskich i opublikować streszczenie danych treningowych (AI Act, art. 53). Właściciel treści może zastrzec, że nie zgadza się na eksplorację tekstów i danych.',
     data4: 'Więcej – w części o prawie i AI Act. Stan prawny sprawdź na dzień szkolenia.',
-    footModel: d => `Obrazy w widoku Generowanie: prawdziwe wyniki modelu ${d.model} (licencja ${d.license}), wygenerowane wcześniej: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, siła opisu ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, ziarna ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Nic nie działa na serwerze – strona działa offline.`,
+    footModel: d => `Obrazy w widoku Generowanie: prawdziwe wyniki modelu ${d.model} (licencja ${d.license}), wygenerowane wcześniej: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, siła opisu ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, szum startowy (seed) ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Nic nie działa na serwerze – strona działa offline.`,
     footToy: n => `Mały model: sieć MLP z ${n} parametrami, 100 kroków szumu, trenowana w Twojej przeglądarce (czysty JavaScript).`,
     footPhoto: 'Zdjęcie kota: Marko Milivojevic (pixnio.com), Wikimedia Commons, CC0.',
   },
@@ -461,18 +462,18 @@ const T = {
     viewNav: 'View', tabGen: 'Generation', tabTrain: 'Training',
     genTitle: 'From noise to picture',
     genLead: 'The model does not draw. It starts from pure noise and removes a bit of it at every step.',
-    lblPrompt: 'Prompt', lblSeed: 'Seed', lblGuid: 'Guidance', lblSteps: 'Steps',
+    lblPrompt: 'Prompt', lblSeed: 'Starting noise', lblGuid: 'Guidance', lblSteps: 'Steps',
     guid_low: 'low', guid_mid: 'medium', guid_high: 'high',
-    now: 'Now', pred: 'What the model predicts',
+    now: 'Now', nowSub: 'The image after this step – less noise with every step.', pred: 'What the model predicts', predSub: 'How the model already pictures the finished image.',
     predEmpty: 'Step 0: pure noise, no guess yet',
     step: 'Step', noiseLeft: 'Noise left',
     play: 'Play', pause: 'Pause', replay: 'Replay',
     stepSlider: 'Denoising step', stripLabel: 'All steps – click to jump',
     kStep: 'step', kPlay: 'play / pause',
-    ahaSeed: 'Seed: same prompt, another picture.',
+    ahaSeed: 'Starting noise: same prompt, different noise to start from – a different picture.',
     ahaGuid: 'Guidance: how closely the model follows the prompt.',
     ahaSteps: 'Steps: fewer steps = faster, but worse.',
-    genHint: 'Seed and guidance change one at a time: a new seed returns to medium guidance, a new guidance level returns to seed 1. 4 / 20 / 50 steps are prepared for "a cat in a hat".',
+    genHint: 'Starting noise is the random image the model starts from (called the "seed" in image tools). Starting noise and guidance change one at a time: new noise returns to medium guidance, a new guidance level returns to noise 1. 4 / 20 / 50 steps are prepared for "a cat in a hat".',
     stepsOnly: 'only for "a cat in a hat"',
     live: (s, n, p) => `Step ${s} of ${n}, ${p}% noise left`,
     trTitle: 'How the model learns',
@@ -519,7 +520,7 @@ const T = {
     data2: 'The authors of these images were not asked for consent. Hence copyright lawsuits, e.g. Getty Images v. Stability AI, or a group of artists against generator makers.',
     data3: 'In the EU, since 2 August 2025 providers of general-purpose models must have a copyright policy and publish a summary of their training data (AI Act, Art. 53). Rights holders can opt out of text and data mining.',
     data4: 'More in the law and AI Act part. Check the legal status on the day of the workshop.',
-    footModel: d => `Pictures in the Generation view: real outputs of ${d.model} (licence ${d.license}), precomputed: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, guidance ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, seeds ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Nothing runs on a server – the page works offline.`,
+    footModel: d => `Pictures in the Generation view: real outputs of ${d.model} (licence ${d.license}), precomputed: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, guidance ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, starting noise (seed) ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Nothing runs on a server – the page works offline.`,
     footToy: n => `Tiny model: an MLP with ${n} parameters, 100 noise steps, trained in your browser (plain JavaScript).`,
     footPhoto: 'Cat photo: Marko Milivojevic (pixnio.com), Wikimedia Commons, CC0.',
   },

@@ -48,6 +48,7 @@ if (ONLY === 'all' || ONLY === 'gen') {
   // seed → guidance mid, new image
   await page.click('#seeds button:nth-child(2)'); g = await gen(page);
   check('seed switch', g.seed === '42' && g.guidance === 'mid' && g.case.includes('s42'), g.case);
+  check('settings change replays from noise', g.playing === 'true' && +g.step <= 1, `step=${g.step} playing=${g.playing}`);
   check('seed aha highlighted', await page.evaluate(() => document.querySelector('.aha.on')?.dataset.aha === 'seed'));
   await page.click('#guids button:nth-child(3)'); g = await gen(page);
   check('guidance switch resets seed', g.guidance === 'high' && g.seed === '11', g.case);

@@ -421,7 +421,7 @@ const T = {
     genLead: 'Model nie rysuje obrazu kreska po kresce. Zaczyna od czystego szumu i w każdym kroku usuwa jego część.',
     lblPrompt: 'Opis', lblSeed: 'Szum startowy', lblGuid: 'Siła opisu', lblSteps: 'Kroki',
     guid_low: 'niska', guid_mid: 'średnia', guid_high: 'wysoka',
-    now: 'Teraz', nowSub: 'Obraz po tym kroku. Z każdym krokiem ma mniej szumu.', pred: 'Co model przewiduje', predSub: 'Jak model już teraz wyobraża sobie gotowy obraz.',
+    now: 'Teraz', nowSub: 'Obraz po tym kroku. Na początku to sam szum, z każdym krokiem jest go mniej.', pred: 'Co model przewiduje', predSub: 'Jak model już teraz wyobraża sobie gotowy obraz.',
     predEmpty: 'Krok 0: czysty szum, model jeszcze nic nie zgadł',
     step: 'Krok', noiseLeft: 'Zostało szumu',
     play: 'Odtwórz', pause: 'Pauza', replay: 'Od nowa',
@@ -430,7 +430,7 @@ const T = {
     ahaSeed: 'Szum startowy: przy tym samym opisie inny szum na starcie daje inny obraz.',
     ahaGuid: 'Siła opisu: jak mocno model słucha opisu.',
     ahaSteps: 'Kroki: mniej kroków = szybciej, ale gorzej.',
-    genHint: 'Szum startowy to losowy obraz, od którego model zaczyna (w programach nazywa się to „seed”). Szum startowy i siłę opisu zmieniasz osobno: po zmianie szumu siła wraca do średniej, a po zmianie siły szum wraca do 1. Kroki 4, 20 i 50 są przygotowane tylko dla opisu „kot w kapeluszu”.',
+    genHint: 'Szum wygląda jak kolorowa mozaika, a nie jak „śnieżenie” w telewizorze, bo Stable Diffusion szumi skompresowaną mapę cech obrazu, a nie same piksele. Szum startowy to losowy obraz, od którego model zaczyna (w programach nazywa się to „seed”). Szum startowy i siłę opisu zmieniasz osobno: po zmianie szumu siła wraca do średniej, a po zmianie siły szum wraca do 1. Kroki 4, 20 i 50 są przygotowane tylko dla opisu „kot w kapeluszu”.',
     stepsOnly: 'tylko dla „kot w kapeluszu”',
     live: (s, n, p) => `Krok ${s} z ${n}, zostało ${p}% szumu`,
     trTitle: 'Jak model się uczy',
@@ -496,7 +496,7 @@ const T = {
     genLead: 'The model does not draw. It starts from pure noise and removes a bit of it at every step.',
     lblPrompt: 'Prompt', lblSeed: 'Starting noise', lblGuid: 'Guidance', lblSteps: 'Steps',
     guid_low: 'low', guid_mid: 'medium', guid_high: 'high',
-    now: 'Now', nowSub: 'The image after this step – less noise with every step.', pred: 'What the model predicts', predSub: 'How the model already pictures the finished image.',
+    now: 'Now', nowSub: 'The image after this step. At first it is pure noise, then there is less with every step.', pred: 'What the model predicts', predSub: 'How the model already pictures the finished image.',
     predEmpty: 'Step 0: pure noise, no guess yet',
     step: 'Step', noiseLeft: 'Noise left',
     play: 'Play', pause: 'Pause', replay: 'Replay',
@@ -505,7 +505,7 @@ const T = {
     ahaSeed: 'Starting noise: same prompt, different noise to start from – a different picture.',
     ahaGuid: 'Guidance: how closely the model follows the prompt.',
     ahaSteps: 'Steps: fewer steps = faster, but worse.',
-    genHint: 'Starting noise is the random image the model starts from (called the "seed" in image tools). Starting noise and guidance change one at a time: new noise returns to medium guidance, a new guidance level returns to noise 1. 4 / 20 / 50 steps are prepared for "a cat in a hat".',
+    genHint: 'The noise looks like a colourful mosaic rather than TV static, because Stable Diffusion adds noise to a compressed feature map of the picture, not to the pixels. Starting noise is the random image the model starts from (called the "seed" in image tools). Starting noise and guidance change one at a time: new noise returns to medium guidance, a new guidance level returns to noise 1. 4 / 20 / 50 steps are prepared for "a cat in a hat".',
     stepsOnly: 'only for "a cat in a hat"',
     live: (s, n, p) => `Step ${s} of ${n}, ${p}% noise left`,
     trTitle: 'How the model learns',
@@ -740,6 +740,7 @@ function play() {
   playTimer = setTimeout(tick, ms);
   renderGen();
 }
+function replay() { stop(); preload(currentCase()); state.step = 0; play(); }
 function setStep(k) { stop(); state.step = k; renderGen(); announce(); }
 function announce() { const c = currentCase(); el.genLive.textContent = t('live', state.step, c.steps, noisePct(c, state.step)); }
 
@@ -943,10 +944,11 @@ document.addEventListener('click', e => {
   const d = b.dataset;
   if (d.tab) { setView(d.tab); return; }
   if (d.lang) { lang = d.lang; try { localStorage.setItem('lang', lang); } catch (err) { /* ignore */ } renderText(); return; }
-  if (d.prompt) { stop(); state.prompt = d.prompt; resolve('prompt'); state.step = currentCase().steps; state.lastControl = null; }
-  else if (d.seed) { stop(); state.seed = +d.seed; resolve('seed'); state.step = currentCase().steps; state.lastControl = 'seed'; }
-  else if (d.guid) { stop(); state.guidance = d.guid; resolve('guid'); state.step = currentCase().steps; state.lastControl = 'guid'; }
-  else if (d.steps) { stop(); state.steps = +d.steps; resolve('steps'); state.step = currentCase().steps; state.lastControl = 'steps'; }
+  // every settings change replays the whole run: from pure noise to the picture
+  if (d.prompt) { state.prompt = d.prompt; resolve('prompt'); state.lastControl = null; replay(); return; }
+  else if (d.seed) { state.seed = +d.seed; resolve('seed'); state.lastControl = 'seed'; replay(); return; }
+  else if (d.guid) { state.guidance = d.guid; resolve('guid'); state.lastControl = 'guid'; replay(); return; }
+  else if (d.steps) { state.steps = +d.steps; resolve('steps'); state.lastControl = 'steps'; replay(); return; }
   else if (b.classList.contains('thumb')) { setStep(+d.k); return; }
   else if (b === el.play) { state.playing ? stop() : play(); }
   else if (d.shape) { state.toy.shape = d.shape; toyReset(); return; }

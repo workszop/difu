@@ -1,0 +1,14 @@
+mockups/
+plans/
+superpowers/
+progress.md
+review*.md
+*.plan.md
+*.draft.*
+scratch/
+# prompt/plan for this app (kept local)
+01_diffusion_od_szumu_do_obrazu.md
+# raw Colab output before packing
+diffusion_frames*.zip
+tools/out/
+__pycache__/

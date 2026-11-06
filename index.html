@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Od szumu do obrazu – edulab</title>
+<meta name="description" content="Jak model dyfuzyjny generuje obraz z szumu i jak się go trenuje – prawdziwe kroki Stable Diffusion 1.5 i mały model trenowany w przeglądarce.">
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+  @keyframes boot-reveal { to { visibility: visible; } }
+  html:not(.app-ready) body { visibility: hidden; animation: boot-reveal 0s 4s forwards; }
+  @media print { html:not(.app-ready) body { visibility: visible; animation: none; } }
+</style>
+<noscript><style>html:not(.app-ready) body { visibility: visible; animation: none; }</style></noscript>
+<style>
+/* ─── edulab tokens (edustyl tokens/colors_and_type.css) ─── */
+:root {
+  --font-display: 'Outfit', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --paper: #FFFFFF; --paper-2: #F5F3F0; --paper-3: #EAE6E0; --surface: #FFFFFF;
+  --ink: #1C1917; --ink-2: #44403C; --ink-3: #625B53;
+  --line: #E0DBD3; --line-2: #C9C2B7; --line-strong: #857C69;
+  --yellow: #FFD500; --yellow-600: #F0C800; --yellow-soft: #FFD500; --yellow-ink: #1C1917;
+  --blue: #1E8FC2; --blue-600: #177AA8; --blue-soft: #177AA8; --blue-ink: #FFFFFF;
+  --green: #00A651; --green-600: #078342; --green-soft: #078342; --green-ink: #FFFFFF;
+  --red: #E5322D; --red-600: #C92823; --red-soft: #C92823; --red-ink: #FFFFFF;
+  --grape: #7A5AC2; --grape-soft: #7A5AC2; --grape-ink: #FFFFFF;
+  --primary: var(--yellow); --on-primary: #1C1917;
+  --focus-ring: 0 0 0 2px var(--paper), 0 0 0 5px var(--ink);
+  --track: color-mix(in srgb, var(--ink) 24%, transparent);
+  --r-xs: 6px; --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(33,30,26,.10), 0 2px 6px rgba(33,30,26,.06);
+  --shadow-md: 0 6px 18px rgba(33,30,26,.12), 0 1px 3px rgba(33,30,26,.08);
+  --shadow-primary: 0 8px 22px color-mix(in srgb, var(--yellow) 30%, transparent);
+  --gutter: clamp(16px, 4vw, 72px);
+  --overline: 12px;
+}
+
+/* ─── base ─── */
+* { box-sizing: border-box; }
+html { scroll-padding-top: 90px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 1.5; }
+h1, h2, h3 { font-family: var(--font-display); color: var(--ink); margin: 0; }
+p { margin: 0; color: var(--ink-2); line-height: 1.55; }
+a { color: var(--blue-600); }
+button { font: inherit; }
+:focus-visible { outline: 3px solid transparent; outline-offset: 2px; box-shadow: var(--focus-ring); }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ov { font-family: var(--font-mono); font-weight: 500; font-size: var(--overline); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+.ic { width: 20px; height: 20px; flex: none; }
+
+/* ─── header ─── */
+.edu-header { position: sticky; top: 0; z-index: 20; background: var(--paper); border-bottom: 1px solid var(--line-2); }
+.edu-header-inner { padding: 6px var(--gutter); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.edu-logo { width: 56px; height: 56px; display: block; margin-right: -6px; }
+.edu-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--ink); }
+.spacer { flex: 1; }
+.progress { position: absolute; left: 0; bottom: -1px; height: 4px; background: var(--yellow); width: 0; transition: width .2s; }
+
+/* segmented toggle: stone track, each option a full pill, active solid yellow */
+.seg { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; background: var(--paper-2); border-radius: var(--r-pill); }
+.seg button { border: none; background: transparent; padding: 8px 14px; border-radius: var(--r-pill); font-weight: 600; font-size: 15px; color: var(--ink-2); cursor: pointer; transition: background-color .15s; }
+.seg button:hover:not(:disabled):not(.active) { background: var(--paper-3); }
+.seg button.active { background: var(--yellow); color: var(--yellow-ink); }
+.seg button:disabled { color: var(--ink-3); cursor: not-allowed; text-decoration: line-through; }
+
+/* ─── page head + sections ─── */
+.page-head { padding: 24px var(--gutter) 26px; }
+.app-title { font-weight: 800; font-size: clamp(2.1rem, 4.6vw, 3.2rem); letter-spacing: -.025em; line-height: 1.05; margin: 0 0 12px; }
+.lead { font-size: 1.15rem; line-height: 1.55; color: var(--ink-2); }
+.sec { padding: 26px var(--gutter) 40px; border-top: 1px solid var(--line); }
+.sec.stone { background: var(--paper-2); }
+.sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.sec-head h2 { font-size: 28px; line-height: 1.15; }
+.sec-head::after { content: ""; flex: 1; height: 1px; background: var(--line-2); }
+.badge { flex: none; width: 34px; height: 34px; border-radius: var(--r-sm); display: inline-grid; place-items: center; background: var(--ink); color: var(--yellow); }
+.badge-lg { width: 46px; height: 46px; border-radius: var(--r-md); }
+.badge-lg .ic { width: 24px; height: 24px; }
+.tone-grape { background: var(--grape-soft); color: var(--grape-ink); }
+.tone-blue { background: var(--blue-soft); color: var(--blue-ink); }
+.tone-yellow { background: var(--yellow-soft); color: var(--yellow-ink); }
+.tone-green { background: var(--green-soft); color: var(--green-ink); }
+
+/* card anatomy */
+.card { background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.card-head { padding: 12px 18px; background: var(--paper-2); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+.card-head h3 { font-size: 19px; line-height: 1.25; }
+.tile-h { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.card-body { padding: 18px; flex: 1; }
+.card-foot { padding: 12px 18px; border-top: 1px dashed var(--line-2); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* buttons */
+.btn { font-family: var(--font-display); font-weight: 600; font-size: 17px; background: var(--yellow); color: var(--on-primary); border: none; border-radius: var(--r-pill); padding: 11px 22px; cursor: pointer; box-shadow: var(--shadow-primary); transition: background-color .15s, transform .12s; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { background: var(--yellow-600); }
+.btn:active { transform: scale(.96); }
+.btn-ghost { font-family: var(--font-display); font-weight: 600; font-size: 15px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 9px 16px; cursor: pointer; transition: background-color .15s; }
+.btn-ghost:hover { background: var(--paper-2); }
+.btn:disabled, .btn-ghost:disabled { opacity: .5; cursor: not-allowed; }
+kbd { font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--line-strong); border-radius: var(--r-xs); padding: 1px 6px; background: var(--surface); color: var(--ink); }
+
+/* ─── generator (layout B "taśma kroków") ─── */
+.bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 18px; }
+.grp { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* image height ≈ viewport minus the chrome above and the strip below, so a projector shows everything at once */
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 200px minmax(0, 1fr); gap: 24px; align-items: center; max-width: max(800px, calc(2 * (100vh - 560px) + 248px)); margin: 0 auto; }
+.stage figure { margin: 0; min-width: 0; }
+.stage figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; min-width: 0; }
+.stage figcaption .ov { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.stage figcaption b { white-space: nowrap; font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--ink); }
+.frame { position: relative; aspect-ratio: 1; border-radius: var(--r-md); overflow: hidden; background: var(--paper-3); border: 1px solid var(--line-2); }
+.frame img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.frame .empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--ink-2); }
+.mid { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.big { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 4.4vw, 60px); line-height: 1; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.meter { width: 100%; height: 10px; border-radius: var(--r-pill); background: var(--paper-3); overflow: hidden; margin: 6px 0 10px; }
+.meter span { display: block; height: 100%; background: var(--ink); border-radius: var(--r-pill); transition: width .15s; }
+.arrow { font: 700 34px var(--font-display); color: var(--ink-3); margin: 6px 0 10px; }
+.scrub { max-width: max(800px, calc(2 * (100vh - 560px) + 248px)); margin: 12px auto 0; display: flex; align-items: center; gap: 14px; }
+.scrub input { flex: 1; }
+input[type=range] { accent-color: var(--ink); width: 100%; height: 28px; cursor: pointer; }
+.strip { display: flex; gap: 4px; overflow-x: auto; padding: 8px 2px 6px; max-width: max(800px, calc(2 * (100vh - 560px) + 248px)); margin: 0 auto; }
+.thumb { flex: 1 0 26px; max-width: 64px; padding: 0; border: 2px solid transparent; border-radius: 8px; background: none; cursor: pointer; line-height: 0; }
+.thumb img { width: 100%; aspect-ratio: 1; border-radius: 6px; display: block; background: var(--paper-3); }
+.thumb.active { border-color: var(--ink); }
+.ahas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+.aha { border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 14px 16px; background: var(--surface); display: flex; gap: 12px; align-items: center; transition: background-color .2s; }
+.aha p { color: var(--ink); font-size: 17px; }
+.aha.on { background: var(--yellow); border-color: var(--yellow); }
+.aha.on p { color: var(--yellow-ink); }
+.hint { margin-top: 14px; font-size: 14px; color: var(--ink-3); }
+
+/* ─── training ─── */
+.story { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.story .frame { margin-bottom: 12px; }
+.story canvas { width: 100%; height: 100%; display: block; }
+.caption-quote { font-family: var(--font-display); font-size: 21px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.readline { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.readline .big { font-size: 34px; }
+.toy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.toy-canvas { width: 100%; max-width: 62vh; margin: 0 auto; aspect-ratio: 1; display: block; border-radius: var(--r-md); background: var(--paper-2); }
+.toy-ctl { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin-bottom: 18px; }
+.loss-canvas { width: 100%; height: 220px; display: block; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.stat { border-radius: var(--r-md); padding: 14px 16px; background: var(--paper-2); }
+.stat .big { font-size: 34px; }
+.note { margin-top: 14px; border-radius: var(--r-md); padding: 12px 16px; background: var(--blue-soft); color: var(--blue-ink); font-weight: 600; }
+.note.warn { background: var(--yellow-soft); color: var(--yellow-ink); }
+.note p { color: inherit; }
+.table-card { padding: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th { text-align: left; padding: 12px 16px; background: var(--paper-3); border-bottom: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); }
+td { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; }
+tbody tr:nth-child(even) td { background: var(--paper-2); }
+tbody tr:last-child td { border-bottom: none; }
+td:first-child { color: var(--ink); font-weight: 600; }
+td.big-cell { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
+sup a { font-family: var(--font-mono); font-size: 11px; text-decoration: none; }
+.sources { margin-top: 14px; font-size: 14px; }
+.sources li { margin-bottom: 4px; color: var(--ink-2); }
+details.more { margin-top: 20px; border: 1px solid var(--line-2); border-radius: var(--r-md); background: var(--surface); }
+details.more summary { cursor: pointer; padding: 14px 18px; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--ink); }
+details.more .more-body { padding: 0 18px 18px; display: grid; gap: 10px; }
+details.more p { max-width: 70rem; }
+
+footer { padding: 26px var(--gutter) 40px; border-top: 1px solid var(--line-2); background: var(--paper-2); font-size: 14px; }
+footer p { color: var(--ink-2); margin-bottom: 6px; }
+
+@media (max-width: 1100px) { .story { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 768px) {
+  .edu-logo { width: 44px; height: 44px; }
+  .edu-wordmark { font-size: 19px; }
+  .edu-header-inner { gap: 8px; }
+  .seg button { padding: 7px 11px; font-size: 14px; }
+  .page-head { padding: 20px var(--gutter) 22px; }
+  .sec { padding: 24px var(--gutter) 32px; }
+  .sec-head { flex-wrap: wrap; }
+  .sec-head h2 { flex: 1; min-width: 0; font-size: 23px; }
+  .sec-head::after { flex: 1 0 100%; }
+  .stage { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stage figcaption b { font-size: 16px; }
+  .stage figcaption .ov { display: none; }
+  .mid { grid-column: 1 / -1; order: -1; flex-direction: row; flex-wrap: wrap; justify-content: space-between; text-align: left; gap: 8px 14px; }
+  .mid .meter, .arrow { display: none; }
+  .big { font-size: 34px; }
+  .frame .empty { font-size: 15px; padding: 10px; }
+  .ahas, .toy, .story { grid-template-columns: 1fr; }
+  kbd, .kbd-hint { display: none; }
+  table { font-size: 14px; }
+  th, td { padding: 10px 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="edu-header">
+  <div class="edu-header-inner">
+    <img class="edu-logo" alt="edulab" src="data:image/png;base64,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">
+    <span class="edu-wordmark">edulab</span>
+    <span class="spacer"></span>
+    <nav class="seg" aria-label="Widok" data-i18n-aria="viewNav">
+      <button type="button" data-tab="gen" data-i18n="tabGen"></button>
+      <button type="button" data-tab="train" data-i18n="tabTrain"></button>
+    </nav>
+    <div class="seg" role="group" aria-label="Język / Language">
+      <button type="button" data-lang="pl">PL</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+</header>
+
+<main id="app" data-lang="pl">
+<!-- ═══════════ VIEW 1: GENEROWANIE ═══════════ -->
+<div id="gen" data-view="gen" data-case="" data-step="0" data-steps="0" data-seed="" data-guidance="" data-prompt="" data-playing="false" data-noise="">
+  <header class="page-head">
+    <h1 class="app-title" data-i18n="genTitle"></h1>
+    <p class="lead" data-i18n="genLead"></p>
+  </header>
+  <section class="sec stone" aria-labelledby="gen-h">
+    <h2 id="gen-h" class="sr-only" data-i18n="genTitle"></h2>
+    <div class="bar">
+      <div class="grp"><span class="ov" id="lbl-prompt" data-i18n="lblPrompt"></span><div class="seg" id="prompts" role="group" aria-labelledby="lbl-prompt"></div></div>
+      <div class="grp"><span class="ov" id="lbl-seed" data-i18n="lblSeed"></span><div class="seg" id="seeds" role="group" aria-labelledby="lbl-seed"></div></div>
+      <div class="grp"><span class="ov" id="lbl-guid" data-i18n="lblGuid"></span><div class="seg" id="guids" role="group" aria-labelledby="lbl-guid"></div></div>
+      <div class="grp"><span class="ov" id="lbl-steps" data-i18n="lblSteps"></span><div class="seg" id="stepsSeg" role="group" aria-labelledby="lbl-steps"></div></div>
+    </div>
+
+    <div class="stage">
+      <figure>
+        <figcaption><b data-i18n="now"></b></figcaption>
+        <div class="frame"><img id="img-now" width="320" height="320" alt=""></div>
+      </figure>
+      <div class="mid">
+        <div><span class="ov" data-i18n="step"></span><div class="big" id="r-step" aria-hidden="true"></div></div>
+        <div style="width:100%"><span class="ov" data-i18n="noiseLeft"></span><div class="big" id="r-noise" aria-hidden="true"></div>
+          <div class="meter"><span id="r-meter"></span></div></div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <button type="button" class="btn" id="play"></button>
+      </div>
+      <figure>
+        <figcaption><b data-i18n="pred"></b></figcaption>
+        <div class="frame"><img id="img-pred" width="320" height="320" alt=""><div class="empty" id="pred-empty" data-i18n="predEmpty"></div></div>
+      </figure>
+    </div>
+
+    <div class="scrub">
+      <input type="range" id="scrub" min="0" max="20" value="0" data-i18n-aria="stepSlider">
+      <span class="kbd-hint"><kbd>←</kbd> <kbd>→</kbd> <span data-i18n="kStep"></span> · <kbd>␣</kbd> <span data-i18n="kPlay"></span></span>
+    </div>
+    <div class="strip" id="strip" role="group" data-i18n-aria="stripLabel"></div>
+    <p class="sr-only" aria-live="polite" id="gen-live"></p>
+
+    <div class="ahas">
+      <div class="aha" data-aha="seed"><span class="badge"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg></span><p data-i18n="ahaSeed"></p></div>
+      <div class="aha" data-aha="guid"><span class="badge"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></span><p data-i18n="ahaGuid"></p></div>
+      <div class="aha" data-aha="steps"><span class="badge"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg></span><p data-i18n="ahaSteps"></p></div>
+    </div>
+    <p class="hint" data-i18n="genHint"></p>
+  </section>
+</div>
+
+<!-- ═══════════ VIEW 2: TRENING ═══════════ -->
+<div id="train" data-view="train" hidden>
+  <header class="page-head">
+    <h1 class="app-title" data-i18n="trTitle"></h1>
+    <p class="lead" data-i18n="trLead"></p>
+  </header>
+
+  <section class="sec stone" aria-labelledby="h-recipe">
+    <div class="sec-head"><span class="badge badge-lg"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg></span><h2 id="h-recipe" data-i18n="recipeH"></h2></div>
+    <div class="story" id="fwd" data-t="0.40" data-noise="">
+      <div class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-grape"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><h3 data-i18n="s1"></h3></span></div>
+        <div class="card-body"><div class="frame"><canvas id="cv-photo" width="320" height="320" role="img" data-i18n-aria="photoAlt"></canvas></div><p class="caption-quote" data-i18n="photoCaption"></p></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-blue"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg></span><h3 data-i18n="s2"></h3></span></div>
+        <div class="card-body"><div class="frame"><canvas id="cv-noisy" width="320" height="320" role="img" data-i18n-aria="noisyAlt"></canvas></div>
+          <div class="readline"><span class="ov">t</span><span class="big" id="fwd-t"></span></div>
+          <input type="range" id="fwd-slider" min="0" max="100" value="40" data-i18n-aria="tSlider">
+          <div class="readline"><span class="ov" data-i18n="noiseShare"></span><output id="fwd-noise" class="ov"></output></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-yellow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span><h3 data-i18n="s3"></h3></span></div>
+        <div class="card-body"><div class="frame"><canvas id="cv-noise" width="320" height="320" role="img" data-i18n-aria="noiseAlt"></canvas></div><p data-i18n="s3Text"></p></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-green"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><h3 data-i18n="s4"></h3></span></div>
+        <div class="card-body"><p class="caption-quote" data-i18n="s4Big"></p><p style="margin-top:10px" data-i18n="s4Text"></p></div>
+      </div>
+    </div>
+    <details class="more"><summary data-i18n="latentQ"></summary><div class="more-body"><p data-i18n="latentA"></p></div></details>
+  </section>
+
+  <section class="sec" aria-labelledby="h-toy">
+    <div class="sec-head"><span class="badge badge-lg tone-blue"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg></span><h2 id="h-toy" data-i18n="toyH"></h2></div>
+    <div id="toy" data-phase="idle" data-epoch="0" data-loss="" data-loss-start="" data-shape="heart" data-source="none" data-sample-t="">
+      <div class="toy-ctl">
+        <div class="grp"><span class="ov" id="lbl-shape" data-i18n="lblShape"></span><div class="seg" id="shapes" role="group" aria-labelledby="lbl-shape"></div></div>
+        <button type="button" class="btn" id="btn-train"></button>
+        <button type="button" class="btn-ghost" id="btn-pre" data-i18n="btnPre"></button>
+        <button type="button" class="btn-ghost" id="btn-sample"></button>
+      </div>
+      <div class="toy">
+        <div class="card">
+          <div class="card-head"><h3 data-i18n="pointsH"></h3><span class="ov" id="toy-t"></span></div>
+          <div class="card-body"><canvas class="toy-canvas" id="cv-points" role="img" data-i18n-aria="pointsAlt"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 data-i18n="lossH"></h3><span class="ov" id="toy-phase"></span></div>
+          <div class="card-body">
+            <canvas class="loss-canvas" id="cv-loss" role="img" data-i18n-aria="lossAlt"></canvas>
+            <div class="stats">
+              <div class="stat"><span class="ov" data-i18n="epoch"></span><div class="big" id="toy-epoch">0</div></div>
+              <div class="stat"><span class="ov" data-i18n="loss"></span><div class="big" id="toy-loss">–</div></div>
+            </div>
+            <div class="note" id="toy-note" aria-live="polite"><p id="toy-note-text"></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec stone" aria-labelledby="h-scale">
+    <div class="sec-head"><span class="badge badge-lg tone-green"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><h2 id="h-scale" data-i18n="scaleH"></h2></div>
+    <div class="card table-card"><div style="overflow-x:auto">
+      <table>
+        <thead><tr><th></th><th data-i18n="colToy"></th><th data-i18n="colSd"></th></tr></thead>
+        <tbody>
+          <tr><td data-i18n="rowParams"></td><td class="big-cell" id="toy-params"></td><td class="big-cell"><span data-i18n="sdParams"></span> <sup><a href="#src1">[1]</a></sup></td></tr>
+          <tr><td data-i18n="rowData"></td><td data-i18n="toyData"></td><td><span data-i18n="sdData"></span> <sup><a href="#src2">[2]</a> <a href="#src3">[3]</a></sup></td></tr>
+          <tr><td data-i18n="rowSteps"></td><td data-i18n="toySteps"></td><td><span data-i18n="sdSteps"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
+          <tr><td data-i18n="rowHw"></td><td data-i18n="toyHw"></td><td><span data-i18n="sdHw"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
+          <tr><td data-i18n="rowTime"></td><td data-i18n="toyTime"></td><td><span data-i18n="sdTime"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
+        </tbody>
+      </table>
+    </div></div>
+    <ol class="sources">
+      <li id="src1"><a href="https://github.com/CompVis/stable-diffusion#stable-diffusion-v1" data-i18n="src1"></a></li>
+      <li id="src2"><a href="https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5" data-i18n="src2"></a></li>
+      <li id="src3"><a href="https://laion.ai/blog/laion-5b/" data-i18n="src3"></a></li>
+    </ol>
+    <details class="more" id="data-fold">
+      <summary data-i18n="dataQ"></summary>
+      <div class="more-body">
+        <p data-i18n="data1"></p>
+        <p data-i18n="data2"></p>
+        <p data-i18n="data3"></p>
+        <p data-i18n="data4"></p>
+      </div>
+    </details>
+  </section>
+</div>
+</main>
+
+<footer>
+  <p id="foot-model"></p>
+  <p id="foot-toy"></p>
+  <p data-i18n="footPhoto"></p>
+</footer>
+
+<script src="assets/gen/cases.js"></script>
+<script src="assets/toy-weights.js"></script>
+<script src="assets/photo-cat.js"></script>
+<script src="toy.js"></script>
+<script>
+'use strict';
+// ─── Constants ──────────────────────────────────
+const DATA = window.DIFFUSION_DATA;
+const PRE = window.TOY_PRETRAINED;
+const GEN_DIR = 'assets/gen/';
+const SEED_NAMES = ['1', '2', '3'];
+const GUID_KEYS = ['low', 'mid', 'high'];
+const STEP_OPTIONS = [4, 20, 50];
+const PLAY_MS = 5000;                 // a whole run plays in about 5 s
+const TOY_EPOCHS = PRE.epochs;        // same settings as the pre-trained weights
+const TOY_SEED = PRE.seed;
+const TOY_POINTS = 1000;
+const TOY_SHAPES = ['heart', 'fish', 'q'];
+const SLOW_LIMIT_S = 40;              // projected live training above this → suggest pre-trained weights
+const lrAt = e => 1e-4 + (4e-3 - 1e-4) * 0.5 * (1 + Math.cos(Math.PI * e / TOY_EPOCHS)); // = tools/pretrain_toy.js
+const ICONS = { play: '▶', pause: '❚❚' };
+
+// ─── Translations ───────────────────────────────
+const T = {
+  pl: {
+    viewNav: 'Widok', tabGen: 'Generowanie', tabTrain: 'Trening',
+    genTitle: 'Od szumu do obrazu',
+    genLead: 'Model nie rysuje. Zaczyna od czystego szumu i w każdym kroku usuwa jego kawałek.',
+    lblPrompt: 'Opis', lblSeed: 'Ziarno', lblGuid: 'Siła opisu', lblSteps: 'Kroki',
+    guid_low: 'niska', guid_mid: 'średnia', guid_high: 'wysoka',
+    now: 'Teraz', pred: 'Co model przewiduje',
+    predEmpty: 'Krok 0: czysty szum, model jeszcze nic nie zgadł',
+    step: 'Krok', noiseLeft: 'Zostało szumu',
+    play: 'Odtwórz', pause: 'Pauza', replay: 'Od nowa',
+    stepSlider: 'Krok odszumiania', stripLabel: 'Wszystkie kroki – kliknij, aby przejść',
+    kStep: 'krok', kPlay: 'start / pauza',
+    ahaSeed: 'Ziarno: ten sam opis, inny obraz.',
+    ahaGuid: 'Siła opisu: jak mocno model słucha opisu.',
+    ahaSteps: 'Kroki: mniej kroków = szybciej, ale gorzej.',
+    genHint: 'Ziarno i siłę opisu zmieniamy osobno: zmiana ziarna wraca do średniej siły, zmiana siły – do ziarna 1. Kroki 4 / 20 / 50 są przygotowane dla opisu „kot w kapeluszu”.',
+    stepsOnly: 'tylko dla „kot w kapeluszu”',
+    live: (s, n, p) => `Krok ${s} z ${n}, zostało ${p}% szumu`,
+    trTitle: 'Jak model się uczy',
+    trLead: 'Prosty przepis: weź prawdziwy obraz z opisem, dodaj szum i każ modelowi zgadnąć, jaki szum dodaliśmy. Powtórz miliardy razy.',
+    recipeH: 'Jeden przykład treningowy',
+    s1: 'Obraz + opis', s2: 'Dodaj szum', s3: 'Zgadnij szum', s4: 'Popraw i powtórz',
+    photoAlt: 'Zdjęcie szarego kota na trawie', photoCaption: '„szary kot na trawie”',
+    noisyAlt: 'Zdjęcie kota z dodanym szumem', noiseAlt: 'Szum, który dodaliśmy – to ma odgadnąć model',
+    tSlider: 'Ile szumu dodać (t)', noiseShare: 'udział szumu',
+    s3Text: 'Model dostaje zaszumiony obraz, t i opis. Ma odgadnąć dokładnie ten szum.',
+    s4Big: 'Zgadł źle? Mała poprawka wag.',
+    s4Text: 'Tak samo dla następnej pary obraz–opis, z innym t i innym szumem. Generowanie to ten sam model użyty odwrotnie.',
+    latentQ: 'Czy Stable Diffusion naprawdę szumi piksele?',
+    latentA: 'Nie dosłownie. Stable Diffusion najpierw zmniejsza obraz 512×512 do skompresowanej „mapy cech” 64×64 (autoenkoder) i szumi właśnie ją. Tu szumimy piksele, bo tak widać zasadę. W widoku Generowanie każdy krok jest tą mapą zamienioną z powrotem na obraz.',
+    toyH: 'Mały model uczy się na żywo',
+    lblShape: 'Kształt', shape_heart: 'serce', shape_fish: 'ryba', shape_q: 'litera Q',
+    btnTrain: 'Trenuj', btnStop: 'Przerwij', btnRetrain: 'Trenuj od nowa', btnPre: 'Wczytaj gotowe wagi',
+    btnSample: 'Próbkuj jeszcze raz', btnSampleRaw: 'Próbkuj bez treningu',
+    pointsH: '1000 punktów: od szumu do kształtu', lossH: 'Błąd w czasie treningu',
+    pointsAlt: 'Punkty przesuwające się z chmury szumu w kształt', lossAlt: 'Wykres błędu (loss) w kolejnych epokach',
+    epoch: 'Epoka', loss: 'Błąd (loss)',
+    phase_idle: 'gotowy', phase_training: 'trening…', phase_sampling: 'próbkowanie…', phase_done: 'gotowe',
+    toyT: t => `krok ${t} / 100`,
+    noteIdle: n => `Model ma ${n} parametrów. Uczy się na 2048 punktach jednego kształtu: dostaje punkt z szumem i zgaduje ten szum.`,
+    noteTraining: (s) => `Trenuję… zostało ok. ${s} s.`,
+    noteSlow: s => `To urządzenie liczy wolno (ok. ${s} s). Możesz wczytać gotowe wagi – policzone wcześniej tym samym kodem.`,
+    noteDone: (a, b) => `Błąd spadł z ${a} do ${b}. Model nie zapamiętał punktów – nauczył się, w którą stronę usuwać szum.`,
+    noteRaw: 'Bez treningu model nie wie, w którą stronę usuwać szum – punkty zostają chmurą.',
+    notePre: (a, b) => `Wczytane gotowe wagi (ten sam kod, ${TOY_EPOCHS} epok). Błąd: ${a} → ${b}.`,
+    scaleH: 'Skala: zabawka a prawdziwy model',
+    colToy: 'Model w przeglądarce', colSd: 'Stable Diffusion 1.5',
+    rowParams: 'Parametry', rowData: 'Dane treningowe', rowSteps: 'Kroki treningu', rowHw: 'Sprzęt', rowTime: 'Czas obliczeń',
+    toyData: '2048 punktów, 1 kształt', toySteps: `${TOY_EPOCHS} epok × 8 kroków`, toyHw: 'Twój laptop lub telefon', toyTime: 'ok. 15–30 sekund',
+    sdParams: 'ok. 1 mld (860 mln sieć odszumiająca + 123 mln enkoder tekstu)',
+    sdData: 'podzbiory LAION-2B(en): 2,3 mld par obraz–opis z internetu',
+    sdSteps: 'v1-1 i v1-2: 431 tys. + 515 tys., potem v1-5: 595 tys. kroków po 2048 obrazów',
+    sdHw: '256 kart A100 (32 × 8)',
+    sdTime: 'ok. 150 000 godzin pracy kart A100 (szacunek autorów, cała rodzina v1)',
+    src1: 'CompVis, README Stable Diffusion v1 – rozmiar sieci',
+    src2: 'Karta modelu Stable Diffusion v1-5 (Hugging Face) – dane, kroki, sprzęt, czas',
+    src3: 'LAION-5B – 5,85 mld par, w tym 2,3 mld po angielsku',
+    dataQ: 'Skąd się biorą dane?',
+    data1: 'Pary obraz–opis zbiera się z internetu. LAION-5B to 5,85 mld linków do obrazków z ich tekstem alternatywnym, wyciągniętych z archiwum Common Crawl i przefiltrowanych modelem CLIP. Zbiór zawiera linki, nie same pliki.',
+    data2: 'Autorzy tych obrazów nie byli pytani o zgodę. Stąd spory sądowe o prawa autorskie, np. Getty Images przeciw Stability AI czy grupa artystów przeciw twórcom generatorów.',
+    data3: 'W UE od 2 sierpnia 2025 r. dostawcy modeli ogólnego przeznaczenia muszą mieć politykę przestrzegania praw autorskich i opublikować streszczenie danych treningowych (AI Act, art. 53). Właściciel treści może zastrzec, że nie zgadza się na eksplorację tekstów i danych.',
+    data4: 'Więcej – w części o prawie i AI Act. Stan prawny sprawdź na dzień szkolenia.',
+    footModel: d => `Obrazy w widoku Generowanie: prawdziwe wyniki modelu ${d.model} (licencja ${d.license}), wygenerowane wcześniej: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, siła opisu ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, ziarna ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Nic nie działa na serwerze – strona działa offline.`,
+    footToy: n => `Mały model: sieć MLP z ${n} parametrami, 100 kroków szumu, trenowana w Twojej przeglądarce (czysty JavaScript).`,
+    footPhoto: 'Zdjęcie kota: Marko Milivojevic (pixnio.com), Wikimedia Commons, CC0.',
+  },
+  en: {
+    viewNav: 'View', tabGen: 'Generation', tabTrain: 'Training',
+    genTitle: 'From noise to picture',
+    genLead: 'The model does not draw. It starts from pure noise and removes a bit of it at every step.',
+    lblPrompt: 'Prompt', lblSeed: 'Seed', lblGuid: 'Guidance', lblSteps: 'Steps',
+    guid_low: 'low', guid_mid: 'medium', guid_high: 'high',
+    now: 'Now', pred: 'What the model predicts',
+    predEmpty: 'Step 0: pure noise, no guess yet',
+    step: 'Step', noiseLeft: 'Noise left',
+    play: 'Play', pause: 'Pause', replay: 'Replay',
+    stepSlider: 'Denoising step', stripLabel: 'All steps – click to jump',
+    kStep: 'step', kPlay: 'play / pause',
+    ahaSeed: 'Seed: same prompt, another picture.',
+    ahaGuid: 'Guidance: how closely the model follows the prompt.',
+    ahaSteps: 'Steps: fewer steps = faster, but worse.',
+    genHint: 'Seed and guidance change one at a time: a new seed returns to medium guidance, a new guidance level returns to seed 1. 4 / 20 / 50 steps are prepared for "a cat in a hat".',
+    stepsOnly: 'only for "a cat in a hat"',
+    live: (s, n, p) => `Step ${s} of ${n}, ${p}% noise left`,
+    trTitle: 'How the model learns',
+    trLead: 'A simple recipe: take a real picture with its caption, add noise and ask the model to guess the noise we added. Repeat billions of times.',
+    recipeH: 'One training example',
+    s1: 'Picture + caption', s2: 'Add noise', s3: 'Guess the noise', s4: 'Correct and repeat',
+    photoAlt: 'Photo of a grey cat on grass', photoCaption: '"a grey cat on grass"',
+    noisyAlt: 'The cat photo with noise added', noiseAlt: 'The noise we added – the model has to guess it',
+    tSlider: 'How much noise to add (t)', noiseShare: 'noise share',
+    s3Text: 'The model gets the noisy picture, t and the caption. It must guess exactly this noise.',
+    s4Big: 'Wrong guess? A small weight update.',
+    s4Text: 'Same for the next picture–caption pair, with another t and other noise. Generation is the same model used in reverse.',
+    latentQ: 'Does Stable Diffusion really add noise to pixels?',
+    latentA: 'Not literally. Stable Diffusion first compresses the 512×512 picture into a 64×64 "feature map" (an autoencoder) and adds noise to that. Here we add noise to pixels because it shows the idea. In the Generation view every step is that map decoded back into a picture.',
+    toyH: 'A tiny model learns live',
+    lblShape: 'Shape', shape_heart: 'heart', shape_fish: 'fish', shape_q: 'letter Q',
+    btnTrain: 'Train', btnStop: 'Stop', btnRetrain: 'Train again', btnPre: 'Load pre-trained weights',
+    btnSample: 'Sample again', btnSampleRaw: 'Sample without training',
+    pointsH: '1000 points: from noise to a shape', lossH: 'Error during training',
+    pointsAlt: 'Points moving from a noise cloud into a shape', lossAlt: 'Loss chart over epochs',
+    epoch: 'Epoch', loss: 'Error (loss)',
+    phase_idle: 'ready', phase_training: 'training…', phase_sampling: 'sampling…', phase_done: 'done',
+    toyT: t => `step ${t} / 100`,
+    noteIdle: n => `The model has ${n} parameters. It learns from 2048 points of one shape: it gets a noisy point and guesses the noise.`,
+    noteTraining: s => `Training… about ${s} s left.`,
+    noteSlow: s => `This device is slow (about ${s} s). You can load pre-trained weights – computed earlier with the same code.`,
+    noteDone: (a, b) => `The error fell from ${a} to ${b}. The model did not memorise points – it learned which way to remove noise.`,
+    noteRaw: 'Without training the model does not know which way to remove noise – the points stay a cloud.',
+    notePre: (a, b) => `Pre-trained weights loaded (same code, ${TOY_EPOCHS} epochs). Error: ${a} → ${b}.`,
+    scaleH: 'Scale: the toy vs a real model',
+    colToy: 'Model in your browser', colSd: 'Stable Diffusion 1.5',
+    rowParams: 'Parameters', rowData: 'Training data', rowSteps: 'Training steps', rowHw: 'Hardware', rowTime: 'Compute time',
+    toyData: '2048 points, 1 shape', toySteps: `${TOY_EPOCHS} epochs × 8 steps`, toyHw: 'your laptop or phone', toyTime: 'about 15–30 seconds',
+    sdParams: 'about 1 billion (860 M denoising network + 123 M text encoder)',
+    sdData: 'subsets of LAION-2B(en): 2.3 billion image–caption pairs from the web',
+    sdSteps: 'v1-1 and v1-2: 431 k + 515 k, then v1-5: 595 k steps of 2048 images',
+    sdHw: '256 A100 GPUs (32 × 8)',
+    sdTime: 'about 150,000 A100 GPU hours (authors\' estimate, whole v1 family)',
+    src1: 'CompVis, Stable Diffusion v1 README – network size',
+    src2: 'Stable Diffusion v1-5 model card (Hugging Face) – data, steps, hardware, time',
+    src3: 'LAION-5B – 5.85 billion pairs, 2.3 billion of them in English',
+    dataQ: 'Where does the data come from?',
+    data1: 'Picture–caption pairs are collected from the web. LAION-5B is 5.85 billion links to images with their alt text, extracted from the Common Crawl archive and filtered with the CLIP model. The dataset holds links, not the files.',
+    data2: 'The authors of these images were not asked for consent. Hence copyright lawsuits, e.g. Getty Images v. Stability AI, or a group of artists against generator makers.',
+    data3: 'In the EU, since 2 August 2025 providers of general-purpose models must have a copyright policy and publish a summary of their training data (AI Act, Art. 53). Rights holders can opt out of text and data mining.',
+    data4: 'More in the law and AI Act part. Check the legal status on the day of the workshop.',
+    footModel: d => `Pictures in the Generation view: real outputs of ${d.model} (licence ${d.license}), precomputed: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, guidance ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, seeds ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Nothing runs on a server – the page works offline.`,
+    footToy: n => `Tiny model: an MLP with ${n} parameters, 100 noise steps, trained in your browser (plain JavaScript).`,
+    footPhoto: 'Cat photo: Marko Milivojevic (pixnio.com), Wikimedia Commons, CC0.',
+  },
+};
+let lang = 'pl';
+try { lang = localStorage.getItem('lang') === 'en' ? 'en' : 'pl'; } catch (e) { /* storage blocked */ }
+function t(key, ...args) { const v = T[lang][key] ?? T.pl[key] ?? key; return typeof v === 'function' ? v(...args) : v; }
+
+// ─── State ──────────────────────────────────────
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const caseById = Object.fromEntries(DATA.cases.map(c => [c.id, c]));
+const state = {
+  view: 'gen',
+  prompt: DATA.prompts[1].id,                // lighthouse: the clearest noise-to-picture run
+  seed: DATA.seeds[0], guidance: 'mid', steps: DATA.default_steps,
+  step: 0, playing: false, lastControl: null,
+  fwdT: 0.4,
+  toy: { shape: 'heart', phase: 'idle', epoch: 0, losses: [], source: 'none', sampleT: null, note: 'idle', slowS: 0, leftS: 0 },
+};
+
+// ─── DOM refs ───────────────────────────────────
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const el = {
+  gen: $('#gen'), train: $('#train'), progress: $('#progress'),
+  prompts: $('#prompts'), seeds: $('#seeds'), guids: $('#guids'), stepsSeg: $('#stepsSeg'),
+  imgNow: $('#img-now'), imgPred: $('#img-pred'), predEmpty: $('#pred-empty'),
+  rStep: $('#r-step'), rNoise: $('#r-noise'), rMeter: $('#r-meter'), play: $('#play'),
+  scrub: $('#scrub'), strip: $('#strip'), genLive: $('#gen-live'),
+  fwd: $('#fwd'), fwdSlider: $('#fwd-slider'), fwdT: $('#fwd-t'), fwdNoise: $('#fwd-noise'),
+  cvPhoto: $('#cv-photo'), cvNoisy: $('#cv-noisy'), cvNoise: $('#cv-noise'),
+  toy: $('#toy'), shapes: $('#shapes'), btnTrain: $('#btn-train'), btnPre: $('#btn-pre'), btnSample: $('#btn-sample'),
+  cvPoints: $('#cv-points'), cvLoss: $('#cv-loss'), toyT: $('#toy-t'), toyPhase: $('#toy-phase'),
+  toyEpoch: $('#toy-epoch'), toyLoss: $('#toy-loss'), toyNote: $('#toy-note'), toyNoteText: $('#toy-note-text'),
+  toyParams: $('#toy-params'), footModel: $('#foot-model'), footToy: $('#foot-toy'),
+};
+
+// ─── Helpers ────────────────────────────────────
+const caseId = (p, s, g, n) => `${p}_s${s}_g${g}_n${n}`;
+const exists = (p, s, g, n) => Boolean(caseById[caseId(p, s, g, n)]);
+const currentCase = () => caseById[caseId(state.prompt, state.seed, state.guidance, state.steps)];
+const framePath = (c, kind, k) => `${GEN_DIR}${c.id}/${kind}${String(k).padStart(2, '0')}.${DATA.format || 'webp'}`;
+const noisePct = (c, k) => Math.round(100 * (1 - c.alphabar[k]));
+const fmtLoss = v => (v == null ? '–' : v.toLocaleString(lang === 'pl' ? 'pl-PL' : 'en-GB', { minimumFractionDigits: 3, maximumFractionDigits: 3 }));
+const fmtInt = n => n.toLocaleString(lang === 'pl' ? 'pl-PL' : 'en-GB');
+function button(label, attrs = {}) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.textContent = label;
+  for (const [k, v] of Object.entries(attrs)) b.dataset[k] = v;
+  return b;
+}
+const preloaded = new Set();
+function preload(c) {
+  if (preloaded.has(c.id)) return;
+  preloaded.add(c.id);
+  for (let k = 0; k <= c.steps; k++) {
+    new Image().src = framePath(c, 'c', k);
+    if (k) new Image().src = framePath(c, 'p', k);
+  }
+}
+
+// picks a case that exists after one control changed, following the one-control-at-a-time rule
+function resolve(changed) {
+  const s0 = DATA.seeds[0], d = DATA.default_steps;
+  if (changed === 'seed') { state.guidance = 'mid'; state.steps = d; }
+  if (changed === 'guid') { state.seed = s0; state.steps = d; }
+  if (changed === 'steps') { state.seed = s0; state.guidance = 'mid'; }
+  if (!exists(state.prompt, state.seed, state.guidance, state.steps)) state.steps = d;
+  if (!exists(state.prompt, state.seed, state.guidance, state.steps)) state.guidance = 'mid';
+  if (!exists(state.prompt, state.seed, state.guidance, state.steps)) state.seed = s0;
+}
+
+// ─── Render: static text ────────────────────────
+function renderText() {
+  document.documentElement.lang = lang;
+  $('#app').dataset.lang = lang;
+  $$('[data-i18n]').forEach(n => { n.textContent = t(n.dataset.i18n); });
+  $$('[data-i18n-aria]').forEach(n => n.setAttribute('aria-label', t(n.dataset.i18nAria)));
+  $$('[data-lang]').forEach(b => { b.classList.toggle('active', b.dataset.lang === lang); b.setAttribute('aria-pressed', b.dataset.lang === lang); });
+  document.title = `${t('genTitle')} – edulab`;
+  el.toyParams.textContent = fmtInt(Toy.N_PARAMS);
+  el.footModel.textContent = t('footModel', DATA);
+  el.footToy.textContent = t('footToy', fmtInt(Toy.N_PARAMS));
+  buildControls();
+}
+
+function buildControls() {
+  el.prompts.replaceChildren(...DATA.prompts.map(p => button(p[lang] ?? p.pl, { prompt: p.id })));
+  el.seeds.replaceChildren(...DATA.seeds.map((s, i) => button(SEED_NAMES[i], { seed: s })));
+  el.guids.replaceChildren(...GUID_KEYS.map(g => button(t('guid_' + g), { guid: g })));
+  el.stepsSeg.replaceChildren(...STEP_OPTIONS.map(n => button(String(n), { steps: n })));
+  el.shapes.replaceChildren(...TOY_SHAPES.map(s => button(t('shape_' + s), { shape: s })));
+  renderGen(); renderToy();
+}
+
+// ─── Render: view switch ────────────────────────
+function renderView() {
+  el.gen.hidden = state.view !== 'gen';
+  el.train.hidden = state.view !== 'train';
+  $$('[data-tab]').forEach(b => { const on = b.dataset.tab === state.view; b.classList.toggle('active', on); b.setAttribute('aria-current', on ? 'page' : 'false'); });
+  renderProgress();
+}
+function renderProgress() {
+  let p = 0;
+  if (state.view === 'gen') { const c = currentCase(); p = c ? state.step / c.steps : 0; }
+  else p = state.toy.epoch / TOY_EPOCHS;
+  el.progress.style.width = (100 * p).toFixed(1) + '%';
+}
+
+// ─── Render: generator ──────────────────────────
+function renderGen() {
+  const c = currentCase();
+  if (!c) return;
+  const k = Math.max(0, Math.min(state.step, c.steps));
+  state.step = k;
+  const pct = noisePct(c, k);
+  Object.assign(el.gen.dataset, { case: c.id, step: k, steps: c.steps, seed: state.seed, guidance: state.guidance, prompt: state.prompt, playing: state.playing, noise: pct });
+
+  el.imgNow.src = framePath(c, 'c', k);
+  el.imgNow.alt = `${t('now')}: ${t('live', k, c.steps, pct)}`;
+  el.imgPred.hidden = k === 0;
+  el.predEmpty.hidden = k !== 0;
+  if (k) { el.imgPred.src = framePath(c, 'p', k); el.imgPred.alt = t('pred'); }
+  el.rStep.textContent = `${k} / ${c.steps}`;
+  el.rNoise.textContent = `${pct}%`;
+  el.rMeter.style.width = pct + '%';
+  el.play.textContent = `${state.playing ? ICONS.pause : ICONS.play} ${state.playing ? t('pause') : (k === c.steps ? t('replay') : t('play'))}`;
+  el.play.setAttribute('aria-pressed', state.playing);
+  el.scrub.max = c.steps; el.scrub.value = k;
+  el.scrub.setAttribute('aria-valuetext', t('live', k, c.steps, pct));
+
+  const hasSteps = s => exists(state.prompt, DATA.seeds[0], 'mid', s);
+  $$('#prompts button').forEach(b => setActive(b, b.dataset.prompt === state.prompt));
+  $$('#seeds button').forEach(b => setActive(b, +b.dataset.seed === state.seed));
+  $$('#guids button').forEach(b => setActive(b, b.dataset.guid === state.guidance));
+  $$('#stepsSeg button').forEach(b => {
+    setActive(b, +b.dataset.steps === state.steps);
+    b.disabled = !hasSteps(+b.dataset.steps);
+    b.title = b.disabled ? t('stepsOnly') : '';
+  });
+  $$('.aha').forEach(a => a.classList.toggle('on', a.dataset.aha === state.lastControl));
+
+  if (el.strip.dataset.case !== c.id) {
+    el.strip.dataset.case = c.id;
+    el.strip.replaceChildren(...Array.from({ length: c.steps + 1 }, (_, i) => {
+      const b = button('', { k: i });
+      b.className = 'thumb';
+      b.setAttribute('aria-label', `${t('step')} ${i}`);
+      const im = document.createElement('img');
+      im.src = framePath(c, 'c', i); im.alt = ''; im.loading = 'lazy'; im.width = 64; im.height = 64;
+      b.append(im);
+      return b;
+    }));
+  }
+  $$('.thumb').forEach(b => { const on = +b.dataset.k === k; b.classList.toggle('active', on); b.setAttribute('aria-current', on ? 'step' : 'false'); });
+  renderProgress();
+}
+function setActive(b, on) { b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); }
+
+// ─── Playback ───────────────────────────────────
+let playTimer = null;
+function stop() { state.playing = false; clearTimeout(playTimer); playTimer = null; }
+function play() {
+  const c = currentCase();
+  if (state.step >= c.steps) state.step = 0;
+  if (reduceMotion) { state.step = c.steps; stop(); renderGen(); announce(); return; }
+  state.playing = true;
+  const ms = Math.max(90, Math.min(900, PLAY_MS / c.steps));
+  const tick = () => {
+    state.step++;
+    if (state.step >= c.steps) { state.step = c.steps; stop(); announce(); }
+    else playTimer = setTimeout(tick, ms);
+    renderGen();
+  };
+  playTimer = setTimeout(tick, ms);
+  renderGen();
+}
+function setStep(k) { stop(); state.step = k; renderGen(); announce(); }
+function announce() { const c = currentCase(); el.genLive.textContent = t('live', state.step, c.steps, noisePct(c, state.step)); }
+
+// ─── Forward process (training example) ─────────
+const fwd = { ready: false, x0: null, eps: null };
+function setupForward() {
+  const img = new Image();
+  img.onload = () => {
+    const ctx = el.cvPhoto.getContext('2d');
+    ctx.drawImage(img, 0, 0, 320, 320);
+    const px = ctx.getImageData(0, 0, 320, 320).data;
+    fwd.x0 = new Float32Array(320 * 320 * 3);
+    fwd.eps = new Float32Array(320 * 320 * 3);
+    const r = Toy.rng(2024);
+    for (let i = 0, j = 0; i < px.length; i += 4) for (let ch = 0; ch < 3; ch++, j++) {
+      fwd.x0[j] = px[i + ch] / 127.5 - 1;
+      fwd.eps[j] = Toy.gaussian(r);
+    }
+    fwd.ready = true;
+    paintNoiseTarget();
+    renderForward();
+  };
+  img.src = window.PHOTO_CAT;
+}
+const fwdAlphaBar = tt => Math.cos(Math.PI / 2 * tt) ** 2;     // cosine schedule: t=0 clean, t=1 pure noise
+function paint(canvas, fn) {
+  const ctx = canvas.getContext('2d'), im = ctx.createImageData(320, 320), d = im.data;
+  for (let i = 0, j = 0; i < d.length; i += 4) { for (let ch = 0; ch < 3; ch++, j++) d[i + ch] = fn(j); d[i + 3] = 255; }
+  ctx.putImageData(im, 0, 0);
+}
+const to255 = v => Math.max(0, Math.min(255, (v + 1) * 127.5));
+function paintNoiseTarget() { paint(el.cvNoise, j => to255(fwd.eps[j] * 0.5)); }
+function renderForward() {
+  const tt = state.fwdT, ab = fwdAlphaBar(tt), a = Math.sqrt(ab), b = Math.sqrt(1 - ab);
+  const pct = Math.round(100 * (1 - ab));
+  el.fwd.dataset.t = tt.toFixed(2); el.fwd.dataset.noise = pct;
+  el.fwdT.textContent = tt.toFixed(2);
+  el.fwdNoise.textContent = pct + '%';
+  el.fwdSlider.value = Math.round(tt * 100);
+  el.fwdSlider.setAttribute('aria-valuetext', `t = ${tt.toFixed(2)}, ${pct}%`);
+  if (fwd.ready) paint(el.cvNoisy, j => to255(a * fwd.x0[j] + b * fwd.eps[j] * 0.5));
+}
+
+// ─── Toy model: training + sampling ─────────────
+const toyRun = { trainer: null, layers: null, sampler: null, raf: 0, t0: 0, sampleSeed: 7 };
+function toySetPhase(p) { state.toy.phase = p; renderToy(); }
+function toyReset() {
+  cancelAnimationFrame(toyRun.raf);
+  Object.assign(state.toy, { phase: 'idle', epoch: 0, losses: [], source: 'none', sampleT: null, note: 'idle' });
+  toyRun.trainer = null; toyRun.layers = null; toyRun.sampler = null;
+  drawPoints(null); renderToy();
+}
+function toyTrain() {
+  toyReset();
+  toyRun.trainer = Toy.createTrainer({ shape: state.toy.shape, seed: TOY_SEED });
+  state.toy.source = 'live'; state.toy.note = 'training'; toyRun.t0 = performance.now();
+  toySetPhase('training');
+  const loop = () => {
+    const start = performance.now();
+    while (performance.now() - start < 24 && state.toy.epoch < TOY_EPOCHS) {
+      state.toy.losses.push(toyRun.trainer.epoch(lrAt(state.toy.epoch)));
+      state.toy.epoch++;
+    }
+    const el_s = (performance.now() - toyRun.t0) / 1000, perEpoch = el_s / state.toy.epoch;
+    state.toy.leftS = Math.round(perEpoch * (TOY_EPOCHS - state.toy.epoch));
+    if (state.toy.epoch >= 20 && perEpoch * TOY_EPOCHS > SLOW_LIMIT_S) { state.toy.note = 'slow'; state.toy.slowS = Math.round(perEpoch * TOY_EPOCHS); }
+    renderToy();
+    if (state.toy.epoch < TOY_EPOCHS) toyRun.raf = requestAnimationFrame(loop);
+    else { toyRun.layers = toyRun.trainer.layers; state.toy.note = 'done'; toySample(); }
+  };
+  toyRun.raf = requestAnimationFrame(loop);
+}
+function toyStop() { cancelAnimationFrame(toyRun.raf); state.toy.note = 'idle'; toySetPhase('idle'); }
+function toyLoadPretrained() {
+  toyReset();
+  const p = PRE.shapes[state.toy.shape];
+  toyRun.layers = Toy.unpackWeights(p.weights);
+  Object.assign(state.toy, { losses: p.losses.slice(), epoch: p.losses.length, source: 'pretrained', note: 'pre' });
+  toySample();
+}
+function toySample(raw = false) {
+  cancelAnimationFrame(toyRun.raf);
+  const layers = raw ? Toy.initParams(TOY_SEED) : toyRun.layers;
+  if (raw) { state.toy.note = 'raw'; state.toy.source = state.toy.source === 'none' ? 'untrained' : state.toy.source; }
+  toyRun.sampleSeed++;
+  toyRun.sampler = Toy.createSampler(layers, TOY_POINTS, toyRun.sampleSeed);
+  state.toy.sampleT = Toy.T;
+  toySetPhase('sampling');
+  if (reduceMotion) { while (toyRun.sampler.step()); finishSample(); return; }
+  let frame = 0;
+  const loop = () => {
+    if (frame++ % 2 === 0) { toyRun.sampler.step(); state.toy.sampleT = toyRun.sampler.t + 1; drawPoints(toyRun.sampler.points); renderToyRead(); }
+    if (toyRun.sampler.t >= 0) toyRun.raf = requestAnimationFrame(loop); else finishSample();
+  };
+  drawPoints(toyRun.sampler.points);
+  toyRun.raf = requestAnimationFrame(loop);
+}
+function finishSample() { state.toy.sampleT = 0; drawPoints(toyRun.sampler.points); toySetPhase('done'); }
+
+const refCache = {};
+function drawPoints(pts) {
+  const cv = el.cvPoints, w = cv.clientWidth || 400, dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = cv.height = Math.round(w * dpr);
+  const ctx = cv.getContext('2d'), W = cv.width, s = W / 3.6, cx = W / 2, cy = W / 2;
+  ctx.fillStyle = '#F5F3F0'; ctx.fillRect(0, 0, W, W);
+  const ref = refCache[state.toy.shape] ??= Toy.sampleShape(state.toy.shape, 1500, 5);
+  ctx.fillStyle = '#C9C2B7';                                     // the target shape, faint (--line-2)
+  for (let i = 0; i < ref.length; i += 2) ctx.fillRect(cx + ref[i] * s - dpr, cy - ref[i + 1] * s - dpr, 2 * dpr, 2 * dpr);
+  if (!pts) return;
+  ctx.fillStyle = '#1C1917';                                     // --ink
+  const rad = 2.2 * dpr;
+  for (let i = 0; i < pts.length; i += 2) {
+    const x = cx + pts[i] * s, y = cy - pts[i + 1] * s;
+    if (x < -5 || y < -5 || x > W + 5 || y > W + 5) continue;
+    ctx.beginPath(); ctx.arc(x, y, rad, 0, 6.2832); ctx.fill();
+  }
+}
+function drawLoss() {
+  const cv = el.cvLoss, dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth || 400, h = cv.clientHeight || 220;
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  const ctx = cv.getContext('2d'), W = cv.width, H = cv.height, L = state.toy.losses;
+  const padL = 44 * dpr, padB = 26 * dpr, padT = 10 * dpr, padR = 8 * dpr;
+  const yMax = 1.2, x = e => padL + (W - padL - padR) * e / TOY_EPOCHS, y = v => padT + (H - padT - padB) * (1 - Math.min(v, yMax) / yMax);
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H);
+  ctx.font = `${11 * dpr}px "Roboto Mono", monospace`; ctx.fillStyle = '#625B53'; ctx.strokeStyle = '#E0DBD3'; ctx.lineWidth = dpr;
+  for (const v of [0, 0.4, 0.8, 1.2]) { ctx.beginPath(); ctx.moveTo(padL, y(v)); ctx.lineTo(W - padR, y(v)); ctx.stroke(); ctx.fillText(v.toFixed(1), 4 * dpr, y(v) + 4 * dpr); }
+  for (const e of [0, TOY_EPOCHS / 2, TOY_EPOCHS]) ctx.fillText(String(e), Math.min(x(e), W - 30 * dpr), H - 6 * dpr);
+  if (!L.length) return;
+  ctx.strokeStyle = '#1C1917'; ctx.lineWidth = 2.5 * dpr; ctx.lineJoin = 'round'; ctx.beginPath();
+  const stepE = Math.max(1, Math.floor(L.length / 300));
+  for (let e = 0; e < L.length; e += stepE) { const v = L.slice(e, e + stepE).reduce((a, b) => a + b) / Math.min(stepE, L.length - e); e ? ctx.lineTo(x(e), y(v)) : ctx.moveTo(x(e), y(v)); }
+  ctx.stroke();
+}
+
+// ─── Render: toy ────────────────────────────────
+function renderToyRead() {
+  const s = state.toy;
+  el.toy.dataset.sampleT = s.sampleT ?? '';
+  el.toyT.textContent = s.sampleT == null ? '' : t('toyT', s.sampleT);
+}
+function renderToy() {
+  const s = state.toy, L = s.losses, last = L.length ? L[L.length - 1] : null;
+  Object.assign(el.toy.dataset, { phase: s.phase, epoch: s.epoch, loss: last == null ? '' : last.toFixed(4), lossStart: L.length ? L[0].toFixed(4) : '', shape: s.shape, source: s.source });
+  $$('#shapes button').forEach(b => { setActive(b, b.dataset.shape === s.shape); b.disabled = s.phase === 'training' || s.phase === 'sampling'; });
+  el.toyEpoch.textContent = s.epoch;
+  el.toyLoss.textContent = fmtLoss(last);
+  el.toyPhase.textContent = t('phase_' + s.phase);
+  const trained = Boolean(toyRun.layers);
+  el.btnTrain.textContent = s.phase === 'training' ? t('btnStop') : (trained ? t('btnRetrain') : t('btnTrain'));
+  el.btnTrain.disabled = s.phase === 'sampling';
+  el.btnPre.disabled = s.phase === 'training' || s.phase === 'sampling';
+  el.btnSample.textContent = trained ? t('btnSample') : t('btnSampleRaw');
+  el.btnSample.disabled = s.phase === 'training' || s.phase === 'sampling';
+  const a = L.length ? fmtLoss(L[0]) : '', b = fmtLoss(last);
+  const notes = { idle: () => t('noteIdle', fmtInt(Toy.N_PARAMS)), training: () => t('noteTraining', s.leftS), slow: () => t('noteSlow', s.slowS), done: () => t('noteDone', a, b), raw: () => t('noteRaw'), pre: () => t('notePre', a, b) };
+  el.toyNoteText.textContent = (notes[s.note] || notes.idle)();
+  el.toyNote.classList.toggle('warn', s.note === 'slow' || s.note === 'raw');
+  renderToyRead();
+  drawLoss();
+  renderProgress();
+}
+
+// ─── Event listeners ────────────────────────────
+document.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b || b.disabled) return;
+  const d = b.dataset;
+  if (d.tab) { setView(d.tab); return; }
+  if (d.lang) { lang = d.lang; try { localStorage.setItem('lang', lang); } catch (err) { /* ignore */ } renderText(); return; }
+  if (d.prompt) { stop(); state.prompt = d.prompt; resolve('prompt'); state.step = currentCase().steps; state.lastControl = null; }
+  else if (d.seed) { stop(); state.seed = +d.seed; resolve('seed'); state.step = currentCase().steps; state.lastControl = 'seed'; }
+  else if (d.guid) { stop(); state.guidance = d.guid; resolve('guid'); state.step = currentCase().steps; state.lastControl = 'guid'; }
+  else if (d.steps) { stop(); state.steps = +d.steps; resolve('steps'); state.step = currentCase().steps; state.lastControl = 'steps'; }
+  else if (b.classList.contains('thumb')) { setStep(+d.k); return; }
+  else if (b === el.play) { state.playing ? stop() : play(); }
+  else if (d.shape) { state.toy.shape = d.shape; toyReset(); return; }
+  else if (b === el.btnTrain) { state.toy.phase === 'training' ? toyStop() : toyTrain(); return; }
+  else if (b === el.btnPre) { toyLoadPretrained(); return; }
+  else if (b === el.btnSample) { toySample(!toyRun.layers); return; }
+  else return;
+  preload(currentCase());
+  renderGen();
+  if (!state.playing) announce();
+});
+el.scrub.addEventListener('input', () => setStep(+el.scrub.value));
+el.fwdSlider.addEventListener('input', () => { state.fwdT = +el.fwdSlider.value / 100; renderForward(); });
+document.addEventListener('keydown', e => {
+  if (state.view !== 'gen' || e.altKey || e.ctrlKey || e.metaKey) return;
+  const tag = e.target.tagName, onRange = e.target === el.scrub;
+  if (tag === 'INPUT' && !onRange || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  const c = currentCase();
+  if (e.key === ' ' && !(tag === 'BUTTON' && e.target !== el.play) && tag !== 'SUMMARY') {
+    e.preventDefault();
+    if (e.target === el.play) return;            // the button's own click handles it
+    state.playing ? stop() : play(); renderGen(); return;
+  }
+  if (onRange) return;                          // the slider handles its own arrows
+  const moves = { ArrowRight: 1, ArrowLeft: -1, Home: -Infinity, End: Infinity };
+  if (e.key in moves) { e.preventDefault(); setStep(Math.max(0, Math.min(c.steps, state.step + moves[e.key]))); }
+});
+function setView(v) {
+  state.view = v === 'train' ? 'train' : 'gen';
+  if (state.view !== 'gen') stop();
+  if (location.hash.slice(1) !== state.view) history.replaceState(null, '', '#' + state.view);
+  renderView();
+  if (state.view === 'train') { drawPoints(toyRun.sampler ? toyRun.sampler.points : null); drawLoss(); }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', () => setView(location.hash.slice(1)));
+let resizeT;
+window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { if (state.view === 'train') { drawPoints(toyRun.sampler ? toyRun.sampler.points : null); drawLoss(); } }, 150); });
+
+// ─── Init ───────────────────────────────────────
+(function init() {
+  if (reduceMotion) state.step = currentCase().steps;
+  renderText();
+  setView(location.hash.slice(1) || 'gen');
+  preload(currentCase());
+  renderForward();
+  setupForward();
+  drawPoints(null);
+  announce();
+  // ─── Reveal ───
+  const FONT_WAIT_MS = 1500;
+  const BRAND_FONTS = ['400 1em Outfit', '700 1em Outfit', '400 1em "IBM Plex Sans"', '600 1em "IBM Plex Sans"', '400 1em "Roboto Mono"'];
+  Promise.race([
+    Promise.all(BRAND_FONTS.map(f => document.fonts.load(f).catch(() => null))),
+    new Promise(r => setTimeout(r, FONT_WAIT_MS)),
+  ]).then(() => {
+    document.documentElement.classList.add('app-ready');
+    if (state.view === 'train') { drawPoints(null); drawLoss(); }
+  });
+})();
+</script>
+</body>
+</html>

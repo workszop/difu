@@ -67,7 +67,6 @@ button { font: inherit; }
 .seg button { border: none; background: transparent; padding: 8px 14px; border-radius: var(--r-pill); font-weight: 600; font-size: 15px; color: var(--ink-2); cursor: pointer; transition: background-color .15s; }
 .seg button:hover:not(:disabled):not(.active) { background: var(--paper-3); }
 .seg button.active { background: var(--yellow); color: var(--yellow-ink); }
-.seg button:disabled { color: var(--ink-3); cursor: not-allowed; text-decoration: line-through; }
 
 /* ─── page head + sections ─── */
 .page-head { padding: 24px var(--gutter) 26px; }
@@ -234,7 +233,7 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
       <div class="grp"><span class="ov" id="lbl-prompt" data-i18n="lblPrompt"></span><div class="seg" id="prompts" role="group" aria-labelledby="lbl-prompt"></div></div>
       <div class="grp"><span class="ov" id="lbl-seed" data-i18n="lblSeed"></span><div class="seg" id="seeds" role="group" aria-labelledby="lbl-seed"></div></div>
       <div class="grp"><span class="ov" id="lbl-guid" data-i18n="lblGuid"></span><div class="seg" id="guids" role="group" aria-labelledby="lbl-guid"></div></div>
-      <div class="grp"><span class="ov" id="lbl-steps" data-i18n="lblSteps"></span><div class="seg" id="stepsSeg" role="group" aria-labelledby="lbl-steps"></div></div>
+      <div class="grp" id="grp-steps"><span class="ov" id="lbl-steps" data-i18n="lblSteps"></span><div class="seg" id="stepsSeg" role="group" aria-labelledby="lbl-steps"></div></div>
     </div>
 
     <div class="stage">
@@ -430,8 +429,7 @@ const T = {
     ahaSeed: 'Szum startowy: przy tym samym opisie inny szum na starcie daje inny obraz.',
     ahaGuid: 'Siła opisu: jak mocno model słucha opisu.',
     ahaSteps: 'Kroki: mniej kroków = szybciej, ale gorzej.',
-    genHint: 'Szum wygląda jak kolorowa mozaika, a nie jak „śnieżenie” w telewizorze, bo Stable Diffusion szumi skompresowaną mapę cech obrazu, a nie same piksele. Szum startowy to losowy obraz, od którego model zaczyna (w programach nazywa się to „seed”). Szum startowy i siłę opisu zmieniasz osobno: po zmianie szumu siła wraca do średniej, a po zmianie siły szum wraca do 1. Kroki 4, 20 i 50 są przygotowane tylko dla opisu „kot w kapeluszu”.',
-    stepsOnly: 'tylko dla „kot w kapeluszu”',
+    genHint: 'Szum wygląda jak kolorowa mozaika, a nie jak „śnieżenie” w telewizorze, bo Stable Diffusion szumi skompresowaną mapę cech obrazu, a nie same piksele. Szum startowy to losowy obraz, od którego model zaczyna (w programach nazywa się to „seed”). Szum startowy i siłę opisu zmieniasz osobno: po zmianie szumu siła wraca do średniej, a po zmianie siły szum wraca do 1. Przełącznik kroków (4, 20, 50) pojawia się przy opisie „kot w kapeluszu”.',
     live: (s, n, p) => `Krok ${s} z ${n}, zostało ${p}% szumu`,
     trTitle: 'Jak model się uczy',
     trLead: 'Prosty przepis: weź prawdziwy obraz z opisem, dodaj szum i każ modelowi zgadnąć, jaki szum dodaliśmy. Powtórz miliardy razy.',
@@ -505,8 +503,7 @@ const T = {
     ahaSeed: 'Starting noise: same prompt, different noise to start from – a different picture.',
     ahaGuid: 'Guidance: how closely the model follows the prompt.',
     ahaSteps: 'Steps: fewer steps = faster, but worse.',
-    genHint: 'The noise looks like a colourful mosaic rather than TV static, because Stable Diffusion adds noise to a compressed feature map of the picture, not to the pixels. Starting noise is the random image the model starts from (called the "seed" in image tools). Starting noise and guidance change one at a time: new noise returns to medium guidance, a new guidance level returns to noise 1. 4 / 20 / 50 steps are prepared for "a cat in a hat".',
-    stepsOnly: 'only for "a cat in a hat"',
+    genHint: 'The noise looks like a colourful mosaic rather than TV static, because Stable Diffusion adds noise to a compressed feature map of the picture, not to the pixels. Starting noise is the random image the model starts from (called the "seed" in image tools). Starting noise and guidance change one at a time: new noise returns to medium guidance, a new guidance level returns to noise 1. The steps switch (4, 20, 50) appears for "a cat in a hat".',
     live: (s, n, p) => `Step ${s} of ${n}, ${p}% noise left`,
     trTitle: 'How the model learns',
     trLead: 'A simple recipe: take a real picture with its caption, add noise and ask the model to guess the noise we added. Repeat billions of times.',
@@ -587,7 +584,7 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const el = {
   gen: $('#gen'), train: $('#train'), progress: $('#progress'),
-  prompts: $('#prompts'), seeds: $('#seeds'), guids: $('#guids'), stepsSeg: $('#stepsSeg'),
+  prompts: $('#prompts'), seeds: $('#seeds'), guids: $('#guids'), stepsSeg: $('#stepsSeg'), grpSteps: $('#grp-steps'),
   imgNow: $('#img-now'), imgPred: $('#img-pred'), predEmpty: $('#pred-empty'),
   rStep: $('#r-step'), rNoise: $('#r-noise'), rMeter: $('#r-meter'), play: $('#play'),
   scrub: $('#scrub'), strip: $('#strip'), genLive: $('#gen-live'),
@@ -700,9 +697,9 @@ function renderGen() {
   $$('#guids button').forEach(b => setActive(b, b.dataset.guid === state.guidance));
   $$('#stepsSeg button').forEach(b => {
     setActive(b, +b.dataset.steps === state.steps);
-    b.disabled = !hasSteps(+b.dataset.steps);
-    b.title = b.disabled ? t('stepsOnly') : '';
+    b.hidden = !hasSteps(+b.dataset.steps);           // only prepared step counts are offered
   });
+  el.grpSteps.hidden = STEP_OPTIONS.filter(hasSteps).length < 2;
   $$('.aha').forEach(a => a.classList.toggle('on', a.dataset.aha === state.lastControl));
 
   if (el.strip.dataset.case !== c.id) {

@@ -4,6 +4,8 @@ Interactive material for part 1b ("Generatywne AI") of the AI workshop: how a di
 generates an image, and how it is trained. Polish first, English second. edulab look.
 Trainer drives it on a projector (10-15 min), participants can open it on their phones.
 
+Live: https://workszop.github.io/difu/
+
 Open `index.html` – no build step, no server, no API calls, works offline and from `file://`.
 
 ## Views

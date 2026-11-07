@@ -141,6 +141,19 @@ input[type=range] { accent-color: var(--ink); width: 100%; height: 28px; cursor:
 .story { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .story .frame { margin-bottom: 12px; }
 .story canvas { width: 100%; height: 100%; display: block; }
+.how { list-style: none; padding: 0; margin: 0; }
+.how-lead { margin-bottom: 18px; max-width: none; }
+.step-no { font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+.how-fig { margin-bottom: 12px; }
+.how-text { min-height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; padding: 16px; border-radius: var(--r-md); background: var(--paper-2); border: 1px solid var(--line-2); text-align: center; }
+.how-prompt { font-family: var(--font-mono); font-size: 13px; line-height: 1.5; color: var(--ink); }
+.how-arrow { font-size: 26px; line-height: 1; color: var(--ink-3); }
+.how-nums { font-family: var(--font-display); font-weight: 800; font-size: 30px; color: var(--ink); }
+.how-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.how-steps .frame { border-radius: var(--r-sm); }
+@media (min-width: 769px) { .how-text { aspect-ratio: 1; min-height: 0; } }
+.how-loop { grid-column: 1 / -1; text-align: center; font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); }
+.how-note { margin-top: 16px; color: var(--ink-2); }
 .caption-quote { font-family: var(--font-display); font-size: 21px; font-weight: 600; color: var(--ink); line-height: 1.3; }
 .readline { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .readline .big { font-size: 34px; }
@@ -291,10 +304,39 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
         <div class="card-body"><p class="caption-quote" data-i18n="s4Big"></p><p style="margin-top:10px" data-i18n="s4Text"></p></div>
       </div>
     </div>
-    <details class="more"><summary data-i18n="latentQ"></summary><div class="more-body"><p data-i18n="latentA"></p></div></details>
   </section>
 
-  <section class="sec" aria-labelledby="h-scale">
+  <section class="sec" aria-labelledby="h-how">
+    <div class="sec-head"><span class="badge badge-lg tone-blue"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><circle cx="12" cy="12" r="4"/></svg></span><h2 id="h-how" data-i18n="howH"></h2></div>
+    <p class="lead how-lead" data-i18n="howLead"></p>
+    <ol class="story how" aria-label="Stable Diffusion">
+      <li class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-grape step-no">1</span><h3 data-i18n="how1H"></h3></span></div>
+        <div class="card-body">
+          <div class="how-fig how-text"><p class="how-prompt" id="how-prompt"></p><span class="how-arrow" aria-hidden="true">↓</span><p class="how-nums">77&nbsp;×&nbsp;768</p></div>
+          <p data-i18n="how1"></p>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-blue step-no">2</span><h3 data-i18n="how2H"></h3></span></div>
+        <div class="card-body"><div class="frame"><img src="assets/gen/owoce_s11_gmid_n20/c00.webp" width="320" height="320" alt="" data-i18n-alt="how2Alt"></div><p data-i18n="how2"></p></div>
+      </li>
+      <li class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-yellow step-no">3</span><h3 data-i18n="how3H"></h3></span></div>
+        <div class="card-body">
+          <div class="how-fig how-steps"><div class="frame"><img src="assets/gen/owoce_s11_gmid_n20/c05.webp" alt=""></div><div class="frame"><img src="assets/gen/owoce_s11_gmid_n20/c10.webp" alt=""></div><div class="frame"><img src="assets/gen/owoce_s11_gmid_n20/c15.webp" alt=""></div><div class="frame"><img src="assets/gen/owoce_s11_gmid_n20/c19.webp" alt=""></div><p class="how-loop" data-i18n="how3Loop"></p></div>
+          <p data-i18n="how3"></p>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-green step-no">4</span><h3 data-i18n="how4H"></h3></span></div>
+        <div class="card-body"><div class="frame"><img src="assets/gen/owoce_s11_gmid_n20/c20.webp" width="320" height="320" alt="" data-i18n-alt="how4Alt"></div><p data-i18n="how4"></p></div>
+      </li>
+    </ol>
+    <p class="how-note" data-i18n="howNote"></p>
+  </section>
+
+  <section class="sec stone" aria-labelledby="h-scale">
     <div class="sec-head"><span class="badge badge-lg tone-green"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><h2 id="h-scale" data-i18n="scaleH"></h2></div>
     <div class="card table-card"><div style="overflow-x:auto">
       <table>
@@ -376,8 +418,20 @@ const T = {
     s3Text: 'Model dostaje zaszumiony obraz, t i opis. Ma odgadnąć dokładnie ten szum.',
     s4Big: 'Jeśli zgadł źle, jego wagi dostają małą poprawkę.',
     s4Text: 'To samo dzieje się z następną parą obraz–opis, z innym t i innym szumem. Przy generowaniu ten sam model działa w drugą stronę.',
-    latentQ: 'Czy Stable Diffusion naprawdę szumi piksele?',
-    latentA: 'Nie dosłownie. Stable Diffusion najpierw zmniejsza obraz 512×512 do skompresowanej „mapy cech” 64×64 (autoenkoder) i szumi właśnie ją. Tu szumimy piksele, bo tak widać zasadę. W widoku Generowanie każdy krok jest tą mapą zamienioną z powrotem na obraz.',
+    howH: 'Jak działa Stable Diffusion',
+    howLead: 'Cztery części pracują po kolei. Obrazki poniżej to prawdziwy przebieg dla opisu „miska z owocami”.',
+    how1H: 'Opis zamienia się w liczby',
+    how1: 'Model nie rozumie słów. Osobna sieć, enkoder tekstu, zamienia opis na 77 × 768 liczb. Z nich model odczytuje, co ma być na obrazku. Opis trafia do modelu po angielsku.',
+    how2H: 'Start od losowego szumu',
+    how2: 'Model nie maluje pikseli. Pracuje na małej, skompresowanej mapie obrazu: 64 × 64 zamiast 512 × 512. To 48 razy mniej liczb, więc liczy się dużo szybciej. Startowa mapa to czysty szum.',
+    how2Alt: 'Startowa mapa: czysty szum',
+    how3H: 'Odszumianie krok po kroku',
+    how3: 'Sieć odszumiająca patrzy na mapę i na opis. Zgaduje, ile szumu jest w każdym miejscu, i usuwa jego część. Robi tak 20 razy, a opis podpowiada, w którą stronę iść.',
+    how3Loop: 'kroki 5, 10, 15, 19 z 20',
+    how4H: 'Mapa zamienia się w obraz',
+    how4: 'Na koniec dekoder rozpakowuje gotową mapę 64 × 64 do obrazu 512 × 512 i odtwarza drobne szczegóły.',
+    how4Alt: 'Gotowy obraz: miska z owocami',
+    howNote: 'Dlatego w widoku Generowanie szum wygląda jak kolorowa mozaika: każdy krok to ta mapa zamieniona z powrotem na obraz.',
     scaleH: 'Skala prawdziwego modelu',
     colSd: 'Stable Diffusion 1.5',
     rowParams: 'Parametry', rowData: 'Dane treningowe', rowSteps: 'Kroki treningu', rowHw: 'Sprzęt', rowTime: 'Czas obliczeń',
@@ -424,8 +478,20 @@ const T = {
     s3Text: 'The model gets the noisy picture, t and the caption. It must guess exactly this noise.',
     s4Big: 'Wrong guess? A small weight update.',
     s4Text: 'Same for the next picture–caption pair, with another t and other noise. Generation is the same model used in reverse.',
-    latentQ: 'Does Stable Diffusion really add noise to pixels?',
-    latentA: 'Not literally. Stable Diffusion first compresses the 512×512 picture into a 64×64 "feature map" (an autoencoder) and adds noise to that. Here we add noise to pixels because it shows the idea. In the Generation view every step is that map decoded back into a picture.',
+    howH: 'How Stable Diffusion works',
+    howLead: 'Four parts work one after another. The pictures below are a real run for the prompt "a bowl of fruit".',
+    how1H: 'The prompt becomes numbers',
+    how1: 'The model does not understand words. A separate network, the text encoder, turns the prompt into 77 × 768 numbers. From them the model reads what the picture should show.',
+    how2H: 'Start from random noise',
+    how2: 'The model does not paint pixels. It works on a small, compressed map of the picture: 64 × 64 instead of 512 × 512. That is 48 times fewer numbers, so it runs much faster. The starting map is pure noise.',
+    how2Alt: 'Starting map: pure noise',
+    how3H: 'Denoising step by step',
+    how3: 'The denoising network looks at the map and the prompt. It guesses how much noise is in each spot and removes part of it. It does this 20 times, and the prompt tells it which way to go.',
+    how3Loop: 'steps 5, 10, 15, 19 of 20',
+    how4H: 'The map becomes a picture',
+    how4: 'At the end the decoder unpacks the finished 64 × 64 map into a 512 × 512 picture and restores the fine details.',
+    how4Alt: 'Finished picture: a bowl of fruit',
+    howNote: 'That is why the noise in the Generation view looks like a colourful mosaic: every step is this map turned back into a picture.',
     scaleH: 'Scale of a real model',
     colSd: 'Stable Diffusion 1.5',
     rowParams: 'Parameters', rowData: 'Training data', rowSteps: 'Training steps', rowHw: 'Hardware', rowTime: 'Compute time',
@@ -514,6 +580,8 @@ function renderText() {
   $('#app').dataset.lang = lang;
   $$('[data-i18n]').forEach(n => { n.textContent = t(n.dataset.i18n); });
   $$('[data-i18n-aria]').forEach(n => n.setAttribute('aria-label', t(n.dataset.i18nAria)));
+  $$('[data-i18n-alt]').forEach(n => { n.alt = t(n.dataset.i18nAlt); });
+  { const q = DATA.prompts.find(p => p.id === 'owoce').prompt; $('#how-prompt').textContent = lang === 'pl' ? `„${q}”` : `"${q}"`; }
   $$('[data-lang]').forEach(b => { b.classList.toggle('active', b.dataset.lang === lang); b.setAttribute('aria-pressed', b.dataset.lang === lang); });
   document.title = `${t('genTitle')} – edulab`;
   el.footModel.textContent = t('footModel', DATA);

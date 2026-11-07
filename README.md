@@ -15,7 +15,7 @@ Open `index.html` – no build step, no server, no API calls, works offline and 
 image, x0). 3 prompts (kot w kapeluszu, logo piekarni, miska z owocami); seed, guidance and steps switches; slider, play/pause, step strip.
 
 **Trening** – one training example on a real photo (add noise at t, the target is the noise);
-a sourced table on the scale of training Stable Diffusion; a fold on training data and copyright.
+a simple illustrated walk through how Stable Diffusion works (text encoder, latent map, denoising loop, decoder) on real frames; a sourced table on the scale of training Stable Diffusion; a fold on training data and copyright.
 
 ## Model and settings (Generowanie)
 

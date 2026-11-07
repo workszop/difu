@@ -36,7 +36,7 @@
   --shadow-sm: 0 1px 2px rgba(33,30,26,.10), 0 2px 6px rgba(33,30,26,.06);
   --shadow-md: 0 6px 18px rgba(33,30,26,.12), 0 1px 3px rgba(33,30,26,.08);
   --shadow-primary: 0 8px 22px color-mix(in srgb, var(--yellow) 30%, transparent);
-  --gutter: clamp(16px, 4vw, 72px);
+  --gutter: max(clamp(16px, 4vw, 72px), calc((100vw - 1200px) / 2));  /* content max 1200px, centred */
   --overline: 12px;
 }
 
@@ -140,20 +140,6 @@ input[type=range] { accent-color: var(--ink); width: 100%; height: 28px; cursor:
 .caption-quote { font-family: var(--font-display); font-size: 21px; font-weight: 600; color: var(--ink); line-height: 1.3; }
 .readline { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .readline .big { font-size: 34px; }
-.toy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-.toy-canvas { width: 100%; max-width: 62vh; margin: 0 auto; aspect-ratio: 1; display: block; border-radius: var(--r-md); background: var(--paper-2); }
-.toy-ctl { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin-bottom: 18px; }
-.loss-canvas { width: 100%; height: 130px; display: block; margin: 4px 0 12px; }
-.chart-lbl { display: flex; justify-content: space-between; gap: 8px; }
-.toy-lead { margin-bottom: 18px; max-width: none; }
-.map-card { margin-bottom: 26px; }
-.map-card td:nth-child(3) { color: var(--ink); }
-.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 6px; }
-.stat { border-radius: var(--r-md); padding: 14px 16px; background: var(--paper-2); }
-.stat .big { font-size: 34px; }
-.note { margin-top: 14px; border-radius: var(--r-md); padding: 12px 16px; background: var(--blue-soft); color: var(--blue-ink); font-weight: 600; }
-.note.warn { background: var(--yellow-soft); color: var(--yellow-ink); }
-.note p { color: inherit; }
 .table-card { padding: 0; }
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
 th { text-align: left; padding: 12px 16px; background: var(--paper-3); border-bottom: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); }
@@ -192,7 +178,7 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
   .mid .meter, .arrow { display: none; }
   .big { font-size: 34px; }
   .frame .empty { font-size: 15px; padding: 10px; }
-  .ahas, .toy, .story { grid-template-columns: 1fr; }
+  .ahas, .story { grid-template-columns: 1fr; }
   kbd, .kbd-hint { display: none; }
   table { font-size: 14px; }
   th, td { padding: 10px 10px; }
@@ -304,64 +290,17 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
     <details class="more"><summary data-i18n="latentQ"></summary><div class="more-body"><p data-i18n="latentA"></p></div></details>
   </section>
 
-  <section class="sec" aria-labelledby="h-toy">
-    <div class="sec-head"><span class="badge badge-lg tone-blue"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg></span><h2 id="h-toy" data-i18n="toyH"></h2></div>
-    <p class="lead toy-lead" data-i18n="toyLead"></p>
-    <div class="card table-card map-card"><div style="overflow-x:auto">
-      <table>
-        <thead><tr><th></th><th data-i18n="mapColSd"></th><th data-i18n="mapColToy"></th></tr></thead>
-        <tbody>
-          <tr><td data-i18n="mapR1"></td><td data-i18n="mapR1sd"></td><td data-i18n="mapR1toy"></td></tr>
-          <tr><td data-i18n="mapR2"></td><td data-i18n="mapR2sd"></td><td data-i18n="mapR2toy"></td></tr>
-          <tr><td data-i18n="mapR3"></td><td data-i18n="mapR3sd"></td><td data-i18n="mapR3toy"></td></tr>
-          <tr><td data-i18n="mapR4"></td><td data-i18n="mapR4sd"></td><td data-i18n="mapR4toy"></td></tr>
-          <tr><td data-i18n="mapR5"></td><td data-i18n="mapR5sd"></td><td data-i18n="mapR5toy"></td></tr>
-          <tr><td data-i18n="mapR6"></td><td data-i18n="mapR6sd"></td><td data-i18n="mapR6toy"></td></tr>
-        </tbody>
-      </table>
-    </div></div>
-    <div id="toy" data-phase="idle" data-epoch="0" data-loss="" data-loss-start="" data-quality="" data-shape="heart" data-source="none" data-sample-t="">
-      <div class="toy-ctl">
-        <div class="grp"><span class="ov" id="lbl-shape" data-i18n="lblShape"></span><div class="seg" id="shapes" role="group" aria-labelledby="lbl-shape"></div></div>
-        <button type="button" class="btn" id="btn-train"></button>
-        <button type="button" class="btn-ghost" id="btn-pre" data-i18n="btnPre"></button>
-        <button type="button" class="btn-ghost" id="btn-sample"></button>
-      </div>
-      <div class="toy">
-        <div class="card">
-          <div class="card-head"><h3 data-i18n="pointsH"></h3><span class="ov" id="toy-t"></span></div>
-          <div class="card-body"><canvas class="toy-canvas" id="cv-points" role="img" data-i18n-aria="pointsAlt"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h3 data-i18n="chartsH"></h3><span class="ov" id="toy-phase"></span></div>
-          <div class="card-body">
-            <div class="chart-lbl"><span class="ov" data-i18n="loss"></span></div>
-            <canvas class="loss-canvas" id="cv-loss" role="img" data-i18n-aria="lossAlt"></canvas>
-            <div class="chart-lbl"><span class="ov" data-i18n="onShapeLong"></span></div>
-            <canvas class="loss-canvas" id="cv-quality" role="img" data-i18n-aria="qualityAlt"></canvas>
-            <div class="stats">
-              <div class="stat"><span class="ov" data-i18n="epoch"></span><div class="big" id="toy-epoch">0</div></div>
-              <div class="stat"><span class="ov" data-i18n="loss"></span><div class="big" id="toy-loss">–</div></div>
-              <div class="stat"><span class="ov" data-i18n="onShape"></span><div class="big" id="toy-q">–</div></div>
-            </div>
-            <div class="note" id="toy-note" aria-live="polite"><p id="toy-note-text"></p></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec stone" aria-labelledby="h-scale">
+  <section class="sec" aria-labelledby="h-scale">
     <div class="sec-head"><span class="badge badge-lg tone-green"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><h2 id="h-scale" data-i18n="scaleH"></h2></div>
     <div class="card table-card"><div style="overflow-x:auto">
       <table>
-        <thead><tr><th></th><th data-i18n="colToy"></th><th data-i18n="colSd"></th></tr></thead>
+        <thead><tr><th></th><th data-i18n="colSd"></th></tr></thead>
         <tbody>
-          <tr><td data-i18n="rowParams"></td><td class="big-cell" id="toy-params"></td><td class="big-cell"><span data-i18n="sdParams"></span> <sup><a href="#src1">[1]</a></sup></td></tr>
-          <tr><td data-i18n="rowData"></td><td data-i18n="toyData"></td><td><span data-i18n="sdData"></span> <sup><a href="#src2">[2]</a> <a href="#src3">[3]</a></sup></td></tr>
-          <tr><td data-i18n="rowSteps"></td><td data-i18n="toySteps"></td><td><span data-i18n="sdSteps"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
-          <tr><td data-i18n="rowHw"></td><td data-i18n="toyHw"></td><td><span data-i18n="sdHw"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
-          <tr><td data-i18n="rowTime"></td><td data-i18n="toyTime"></td><td><span data-i18n="sdTime"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
+          <tr><td data-i18n="rowParams"></td><td class="big-cell"><span data-i18n="sdParams"></span> <sup><a href="#src1">[1]</a></sup></td></tr>
+          <tr><td data-i18n="rowData"></td><td><span data-i18n="sdData"></span> <sup><a href="#src2">[2]</a> <a href="#src3">[3]</a></sup></td></tr>
+          <tr><td data-i18n="rowSteps"></td><td><span data-i18n="sdSteps"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
+          <tr><td data-i18n="rowHw"></td><td><span data-i18n="sdHw"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
+          <tr><td data-i18n="rowTime"></td><td><span data-i18n="sdTime"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
         </tbody>
       </table>
     </div></div>
@@ -385,31 +324,23 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
 
 <footer>
   <p id="foot-model"></p>
-  <p id="foot-toy"></p>
   <p data-i18n="footPhoto"></p>
 </footer>
 
 <script src="assets/gen/cases.js"></script>
-<script src="assets/toy-weights.js"></script>
 <script src="assets/photo-cat.js"></script>
-<script src="toy.js"></script>
 <script>
 'use strict';
 // ─── Constants ──────────────────────────────────
 const DATA = window.DIFFUSION_DATA;
-const PRE = window.TOY_PRETRAINED;
 const GEN_DIR = 'assets/gen/';
 const SEED_NAMES = ['1', '2', '3'];
 const GUID_KEYS = ['low', 'mid', 'high'];
 const STEP_OPTIONS = [4, 20, 50];
 const PLAY_MS = 5000;                 // a whole run plays in about 5 s
-const TOY_EPOCHS = PRE.epochs;        // same settings as the pre-trained weights
-const TOY_SEED = PRE.seed;
-const TOY_POINTS = 1000;
-const PREVIEW_EVERY = PRE.previewEvery, PREVIEW_N = PRE.previewN, PREVIEW_SEED = PRE.previewSeed;
-const TOY_SHAPES = ['heart', 'fish', 'q'];
-const SLOW_LIMIT_S = 40;              // projected live training above this → suggest pre-trained weights
-const lrAt = e => 1e-4 + (4e-3 - 1e-4) * 0.5 * (1 + Math.cos(Math.PI * e / TOY_EPOCHS)); // = tools/pretrain_toy.js
+// seeded PRNG + normal noise for the training example (xorshift32, Box-Muller)
+function rng(seed) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
+function gaussian(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
 const ICONS = { play: '▶', pause: '❚❚' };
 
 // ─── Translations ───────────────────────────────
@@ -443,34 +374,9 @@ const T = {
     s4Text: 'To samo dzieje się z następną parą obraz–opis, z innym t i innym szumem. Przy generowaniu ten sam model działa w drugą stronę.',
     latentQ: 'Czy Stable Diffusion naprawdę szumi piksele?',
     latentA: 'Nie dosłownie. Stable Diffusion najpierw zmniejsza obraz 512×512 do skompresowanej „mapy cech” 64×64 (autoenkoder) i szumi właśnie ją. Tu szumimy piksele, bo tak widać zasadę. W widoku Generowanie każdy krok jest tą mapą zamienioną z powrotem na obraz.',
-    toyH: 'Mały model uczy się na żywo',
-    lblShape: 'Kształt', shape_heart: 'serce', shape_fish: 'ryba', shape_q: 'litera Q',
-    btnTrain: 'Trenuj', btnStop: 'Przerwij', btnRetrain: 'Trenuj od nowa', btnPre: 'Wczytaj gotowe wagi',
-    btnSample: 'Próbkuj jeszcze raz', btnSampleRaw: 'Próbkuj bez treningu',
-    toyLead: 'Ten model robi to samo co Stable Diffusion, tylko na danych, które da się narysować. Jeden przykład to kropka, czyli dwie liczby (x, y). Kształt pokazuje, jak wyglądają poprawne przykłady: kropka na kształcie to udany wynik, kropka obok to wynik z błędem.',
-    mapColSd: 'Stable Diffusion', mapColToy: 'Mały model w przeglądarce',
-    mapR1: 'Jeden przykład', mapR1sd: 'obraz: 16 384 liczby (mapa cech 64×64×4)', mapR1toy: 'kropka: 2 liczby (x, y)',
-    mapR2: 'Dane treningowe', mapR2sd: 'obrazy z opisami (podzbiory 2,3 mld par)', mapR2toy: '2048 kropek ułożonych w kształt',
-    mapR3: 'Trening', mapR3sd: 'dodaj szum do obrazu, model zgaduje ten szum', mapR3toy: 'dodaj szum do kropki, model zgaduje ten szum',
-    mapR4: 'Generowanie', mapR4sd: 'losowy szum, potem kroki odszumiania aż do obrazu', mapR4toy: 'losowa kropka, potem 100 kroków aż do kształtu',
-    mapR5: 'Udany wynik', mapR5sd: 'obraz wygląda jak prawdziwy', mapR5toy: 'kropka leży na kształcie',
-    mapR6: 'Opis (prompt)', mapR6sd: 'mówi, w którą stronę odszumiać', mapR6toy: 'brak, model zna tylko jeden kształt',
-    pointsH: '1000 kropek = 1000 wygenerowanych przykładów', chartsH: 'Postęp treningu',
-    pointsAlt: 'Kropki przesuwające się z chmury szumu w kształt', lossAlt: 'Wykres błędu (loss) w kolejnych epokach', qualityAlt: 'Wykres: jaka część wygenerowanych kropek trafia na kształt',
-    epoch: 'Epoka', loss: 'Błąd (loss)', onShape: 'Na kształcie', onShapeLong: 'Kropki na kształcie (%)',
-    phase_idle: 'gotowy', phase_training: 'trening…', phase_sampling: 'generowanie…', phase_done: 'gotowe',
-    toyT: t => `krok ${t} / 100`, toyPreview: e => `podgląd po epoce ${e}`,
-    noteIdle: (n, k) => `Model ma ${n} parametrów. Kliknij „Trenuj”: co ${k} epok rysunek pokaże, co model wygenerowałby na tym etapie.`,
-    noteTraining: s => `Trenuję, zostało ok. ${s} s. Rysunek pokazuje, co model wygenerowałby po ostatniej epoce.`,
-    noteSampling: 'Generuję 1000 kropek. Każda zaczyna w losowym miejscu i w 100 krokach przesuwa się tam, gdzie według modelu jest mniej szumu.',
-    noteSlow: s => `To urządzenie liczy wolno, trening zajmie ok. ${s} s. Możesz zamiast tego wczytać gotowe wagi, policzone wcześniej tym samym kodem.`,
-    noteDone: (a, b, q0, q) => `Błąd spadł z ${a} do ${b} i potem stoi prawie w miejscu. Szum jest losowy, więc nie da się go zgadnąć bezbłędnie i błąd nie zejdzie do zera. Postęp widać po kropkach: na początku na kształt trafiało ${q0}%, teraz ${q}%.`,
-    noteRaw: q => `Bez treningu model nie wie, w którą stronę usuwać szum, więc kropki zostają chmurą. Na kształt trafia ${q}%.`,
-    notePre: (a, b, q0, q) => `Wczytane gotowe wagi (ten sam kod, ${TOY_EPOCHS} epok). Błąd: ${a} → ${b}. Kropki na kształcie: ${q0}% → ${q}%.`,
-    scaleH: 'Skala: zabawka a prawdziwy model',
-    colToy: 'Model w przeglądarce', colSd: 'Stable Diffusion 1.5',
+    scaleH: 'Skala prawdziwego modelu',
+    colSd: 'Stable Diffusion 1.5',
     rowParams: 'Parametry', rowData: 'Dane treningowe', rowSteps: 'Kroki treningu', rowHw: 'Sprzęt', rowTime: 'Czas obliczeń',
-    toyData: '2048 kropek, 1 kształt', toySteps: `${TOY_EPOCHS} epok × 16 kroków`, toyHw: 'Twój laptop lub telefon', toyTime: 'ok. 15–30 sekund',
     sdParams: 'ok. 1 mld (860 mln sieć odszumiająca + 123 mln enkoder tekstu)',
     sdData: 'podzbiory LAION-2B(en): 2,3 mld par obraz–opis z internetu',
     sdSteps: 'v1-1 i v1-2: 431 tys. + 515 tys., potem v1-5: 595 tys. kroków po 2048 obrazów',
@@ -485,7 +391,6 @@ const T = {
     data3: 'W UE od 2 sierpnia 2025 r. dostawcy modeli ogólnego przeznaczenia muszą mieć politykę przestrzegania praw autorskich i opublikować streszczenie danych treningowych (AI Act, art. 53). Właściciel treści może zastrzec, że nie zgadza się na eksplorację tekstów i danych.',
     data4: 'Więcej o tym w części o prawie i AI Act. Stan prawny sprawdź przed szkoleniem.',
     footModel: d => `Obrazy w widoku Generowanie: prawdziwe wyniki modelu ${d.model} (licencja ${d.license}), wygenerowane wcześniej: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, siła opisu ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, szum startowy (seed) ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Strona nie łączy się z żadnym serwerem i działa offline.`,
-    footToy: n => `Mały model: sieć MLP z ${n} parametrami, 100 kroków szumu, trenowana w Twojej przeglądarce (czysty JavaScript).`,
     footPhoto: 'Zdjęcie kota: Marko Milivojevic (pixnio.com), Wikimedia Commons, CC0.',
   },
   en: {
@@ -517,34 +422,9 @@ const T = {
     s4Text: 'Same for the next picture–caption pair, with another t and other noise. Generation is the same model used in reverse.',
     latentQ: 'Does Stable Diffusion really add noise to pixels?',
     latentA: 'Not literally. Stable Diffusion first compresses the 512×512 picture into a 64×64 "feature map" (an autoencoder) and adds noise to that. Here we add noise to pixels because it shows the idea. In the Generation view every step is that map decoded back into a picture.',
-    toyH: 'A tiny model learns live',
-    lblShape: 'Shape', shape_heart: 'heart', shape_fish: 'fish', shape_q: 'letter Q',
-    btnTrain: 'Train', btnStop: 'Stop', btnRetrain: 'Train again', btnPre: 'Load pre-trained weights',
-    btnSample: 'Sample again', btnSampleRaw: 'Sample without training',
-    toyLead: 'This model does the same as Stable Diffusion, only on data you can draw. One example is a dot: two numbers (x, y). The shape shows what correct examples look like: a dot on the shape is a good result, a dot next to it is a flawed one.',
-    mapColSd: 'Stable Diffusion', mapColToy: 'Tiny model in your browser',
-    mapR1: 'One example', mapR1sd: 'a picture: 16,384 numbers (a 64×64×4 feature map)', mapR1toy: 'a dot: 2 numbers (x, y)',
-    mapR2: 'Training data', mapR2sd: 'pictures with captions (subsets of 2.3 billion pairs)', mapR2toy: '2048 dots arranged in a shape',
-    mapR3: 'Training', mapR3sd: 'add noise to a picture, the model guesses the noise', mapR3toy: 'add noise to a dot, the model guesses the noise',
-    mapR4: 'Generation', mapR4sd: 'random noise, then denoising steps until a picture', mapR4toy: 'a random dot, then 100 steps until the shape',
-    mapR5: 'A good result', mapR5sd: 'the picture looks real', mapR5toy: 'the dot lies on the shape',
-    mapR6: 'Prompt', mapR6sd: 'tells which way to denoise', mapR6toy: 'none, the model knows only one shape',
-    pointsH: '1000 dots = 1000 generated examples', chartsH: 'Training progress',
-    pointsAlt: 'Dots moving from a noise cloud into a shape', lossAlt: 'Loss chart over epochs', qualityAlt: 'Chart: share of generated dots that land on the shape',
-    epoch: 'Epoch', loss: 'Error (loss)', onShape: 'On the shape', onShapeLong: 'Dots on the shape (%)',
-    phase_idle: 'ready', phase_training: 'training…', phase_sampling: 'generating…', phase_done: 'done',
-    toyT: t => `step ${t} / 100`, toyPreview: e => `preview after epoch ${e}`,
-    noteIdle: (n, k) => `The model has ${n} parameters. Click "Train": every ${k} epochs the drawing shows what the model would generate at that point.`,
-    noteTraining: s => `Training, about ${s} s left. The drawing shows what the model would generate after the last epoch.`,
-    noteSampling: 'Generating 1000 dots. Each starts at a random place and in 100 steps moves to where the model sees less noise.',
-    noteSlow: s => `This device is slow (about ${s} s). You can load pre-trained weights instead, computed earlier with the same code.`,
-    noteDone: (a, b, q0, q) => `The error fell from ${a} to ${b} and then barely moves. The noise is random, so it cannot be guessed perfectly and the error never reaches zero. Progress shows in the dots: at first ${q0}% landed on the shape, now ${q}%.`,
-    noteRaw: q => `Without training the model does not know which way to remove noise, so the dots stay a cloud. ${q}% land on the shape.`,
-    notePre: (a, b, q0, q) => `Pre-trained weights loaded (same code, ${TOY_EPOCHS} epochs). Error: ${a} → ${b}. Dots on the shape: ${q0}% → ${q}%.`,
-    scaleH: 'Scale: the toy vs a real model',
-    colToy: 'Model in your browser', colSd: 'Stable Diffusion 1.5',
+    scaleH: 'Scale of a real model',
+    colSd: 'Stable Diffusion 1.5',
     rowParams: 'Parameters', rowData: 'Training data', rowSteps: 'Training steps', rowHw: 'Hardware', rowTime: 'Compute time',
-    toyData: '2048 dots, 1 shape', toySteps: `${TOY_EPOCHS} epochs × 16 steps`, toyHw: 'your laptop or phone', toyTime: 'about 15–30 seconds',
     sdParams: 'about 1 billion (860 M denoising network + 123 M text encoder)',
     sdData: 'subsets of LAION-2B(en): 2.3 billion image–caption pairs from the web',
     sdSteps: 'v1-1 and v1-2: 431 k + 515 k, then v1-5: 595 k steps of 2048 images',
@@ -559,7 +439,6 @@ const T = {
     data3: 'In the EU, since 2 August 2025 providers of general-purpose models must have a copyright policy and publish a summary of their training data (AI Act, Art. 53). Rights holders can opt out of text and data mining.',
     data4: 'More in the law and AI Act part. Check the legal status on the day of the workshop.',
     footModel: d => `Pictures in the Generation view: real outputs of ${d.model} (licence ${d.license}), precomputed: ${d.scheduler}, ${d.gen_size}×${d.gen_size} px, guidance ${d.guidance.low} / ${d.guidance.mid} / ${d.guidance.high}, starting noise (seed) ${d.seeds.join(', ')}, diffusers ${d.diffusers}, ${d.gpu}, ${d.generated}. Nothing runs on a server – the page works offline.`,
-    footToy: n => `Tiny model: an MLP with ${n} parameters, 100 noise steps, trained in your browser (plain JavaScript).`,
     footPhoto: 'Cat photo: Marko Milivojevic (pixnio.com), Wikimedia Commons, CC0.',
   },
 };
@@ -576,7 +455,6 @@ const state = {
   seed: DATA.seeds[0], guidance: 'mid', steps: DATA.default_steps,
   step: 0, playing: false, lastControl: null,
   fwdT: 0.4,
-  toy: { shape: 'heart', phase: 'idle', epoch: 0, losses: [], quality: [], finalQ: null, previewEpoch: null, source: 'none', sampleT: null, note: 'idle', slowS: 0, leftS: 0 },
 };
 
 // ─── DOM refs ───────────────────────────────────
@@ -590,10 +468,7 @@ const el = {
   scrub: $('#scrub'), strip: $('#strip'), genLive: $('#gen-live'),
   fwd: $('#fwd'), fwdSlider: $('#fwd-slider'), fwdT: $('#fwd-t'), fwdNoise: $('#fwd-noise'),
   cvPhoto: $('#cv-photo'), cvNoisy: $('#cv-noisy'), cvNoise: $('#cv-noise'),
-  toy: $('#toy'), shapes: $('#shapes'), btnTrain: $('#btn-train'), btnPre: $('#btn-pre'), btnSample: $('#btn-sample'),
-  cvPoints: $('#cv-points'), cvLoss: $('#cv-loss'), cvQuality: $('#cv-quality'), toyQ: $('#toy-q'), toyT: $('#toy-t'), toyPhase: $('#toy-phase'),
-  toyEpoch: $('#toy-epoch'), toyLoss: $('#toy-loss'), toyNote: $('#toy-note'), toyNoteText: $('#toy-note-text'),
-  toyParams: $('#toy-params'), footModel: $('#foot-model'), footToy: $('#foot-toy'),
+  footModel: $('#foot-model'),
 };
 
 // ─── Helpers ────────────────────────────────────
@@ -602,9 +477,6 @@ const exists = (p, s, g, n) => Boolean(caseById[caseId(p, s, g, n)]);
 const currentCase = () => caseById[caseId(state.prompt, state.seed, state.guidance, state.steps)];
 const framePath = (c, kind, k) => `${GEN_DIR}${c.id}/${kind}${String(k).padStart(2, '0')}.${DATA.format || 'webp'}`;
 const noisePct = (c, k) => Math.round(100 * (1 - c.alphabar[k]));
-const fmtNum = (v, d) => v.toLocaleString(lang === 'pl' ? 'pl-PL' : 'en-GB', { minimumFractionDigits: d, maximumFractionDigits: d });
-const fmtLoss = v => (v == null ? '–' : fmtNum(v, 3));
-const fmtInt = n => n.toLocaleString(lang === 'pl' ? 'pl-PL' : 'en-GB');
 function button(label, attrs = {}) {
   const b = document.createElement('button');
   b.type = 'button'; b.textContent = label;
@@ -640,9 +512,7 @@ function renderText() {
   $$('[data-i18n-aria]').forEach(n => n.setAttribute('aria-label', t(n.dataset.i18nAria)));
   $$('[data-lang]').forEach(b => { b.classList.toggle('active', b.dataset.lang === lang); b.setAttribute('aria-pressed', b.dataset.lang === lang); });
   document.title = `${t('genTitle')} – edulab`;
-  el.toyParams.textContent = fmtInt(Toy.N_PARAMS);
   el.footModel.textContent = t('footModel', DATA);
-  el.footToy.textContent = t('footToy', fmtInt(Toy.N_PARAMS));
   buildControls();
 }
 
@@ -651,8 +521,7 @@ function buildControls() {
   el.seeds.replaceChildren(...DATA.seeds.map((s, i) => button(SEED_NAMES[i], { seed: s })));
   el.guids.replaceChildren(...GUID_KEYS.map(g => button(t('guid_' + g), { guid: g })));
   el.stepsSeg.replaceChildren(...STEP_OPTIONS.map(n => button(String(n), { steps: n })));
-  el.shapes.replaceChildren(...TOY_SHAPES.map(s => button(t('shape_' + s), { shape: s })));
-  renderGen(); renderToy();
+  renderGen();
 }
 
 // ─── Render: view switch ────────────────────────
@@ -665,7 +534,6 @@ function renderView() {
 function renderProgress() {
   let p = 0;
   if (state.view === 'gen') { const c = currentCase(); p = c ? state.step / c.steps : 0; }
-  else p = state.toy.epoch / TOY_EPOCHS;
   el.progress.style.width = (100 * p).toFixed(1) + '%';
 }
 
@@ -751,10 +619,10 @@ function setupForward() {
     const px = ctx.getImageData(0, 0, 320, 320).data;
     fwd.x0 = new Float32Array(320 * 320 * 3);
     fwd.eps = new Float32Array(320 * 320 * 3);
-    const r = Toy.rng(2024);
+    const r = rng(2024);
     for (let i = 0, j = 0; i < px.length; i += 4) for (let ch = 0; ch < 3; ch++, j++) {
       fwd.x0[j] = px[i + ch] / 127.5 - 1;
-      fwd.eps[j] = Toy.gaussian(r);
+      fwd.eps[j] = gaussian(r);
     }
     fwd.ready = true;
     paintNoiseTarget();
@@ -781,159 +649,6 @@ function renderForward() {
   if (fwd.ready) paint(el.cvNoisy, j => to255(a * fwd.x0[j] + b * fwd.eps[j] * 0.5));
 }
 
-// ─── Toy model: training + sampling ─────────────
-const toyRun = { trainer: null, layers: null, sampler: null, preview: null, raf: 0, t0: 0, sampleSeed: 7 };
-function toySetPhase(p) { state.toy.phase = p; renderToy(); }
-function toyReset() {
-  cancelAnimationFrame(toyRun.raf);
-  Object.assign(state.toy, { phase: 'idle', epoch: 0, losses: [], quality: [], finalQ: null, source: 'none', sampleT: null, previewEpoch: null, note: 'idle' });
-  toyRun.trainer = null; toyRun.layers = null; toyRun.sampler = null; toyRun.preview = null;
-  drawPoints(null); renderToy();
-}
-// what the model would generate right now: a fast preview sample + share of dots on the shape
-function toyPreview() {
-  toyRun.preview = Toy.quickSample(toyRun.trainer.layers, PREVIEW_N, PREVIEW_SEED);
-  state.toy.quality.push([state.toy.epoch, Toy.quality(toyRun.preview, state.toy.shape)]);
-  state.toy.previewEpoch = state.toy.epoch;
-  drawPoints(toyRun.preview);
-}
-function toyTrain() {
-  toyReset();
-  toyRun.trainer = Toy.createTrainer({ shape: state.toy.shape, seed: TOY_SEED });
-  state.toy.source = 'live'; state.toy.note = 'training'; toyRun.t0 = performance.now();
-  toyPreview();
-  toySetPhase('training');
-  const loop = () => {
-    const start = performance.now();
-    while (performance.now() - start < 24 && state.toy.epoch < TOY_EPOCHS) {
-      state.toy.losses.push(toyRun.trainer.epoch(lrAt(state.toy.epoch)));
-      state.toy.epoch++;
-      if (state.toy.epoch % PREVIEW_EVERY === 0) { toyPreview(); break; }
-    }
-    const el_s = (performance.now() - toyRun.t0) / 1000, perEpoch = el_s / state.toy.epoch;
-    state.toy.leftS = Math.round(perEpoch * (TOY_EPOCHS - state.toy.epoch));
-    if (state.toy.epoch >= 20 && perEpoch * TOY_EPOCHS > SLOW_LIMIT_S) { state.toy.note = 'slow'; state.toy.slowS = Math.round(perEpoch * TOY_EPOCHS); }
-    else if (state.toy.note === 'slow') state.toy.note = 'training';
-    renderToy();
-    if (state.toy.epoch < TOY_EPOCHS) toyRun.raf = requestAnimationFrame(loop);
-    else { toyRun.layers = toyRun.trainer.layers; state.toy.note = 'done'; toySample(); }
-  };
-  toyRun.raf = requestAnimationFrame(loop);
-}
-function toyStop() { cancelAnimationFrame(toyRun.raf); state.toy.note = 'idle'; toySetPhase('idle'); }
-function toyLoadPretrained() {
-  toyReset();
-  const p = PRE.shapes[state.toy.shape];
-  toyRun.layers = Toy.unpackWeights(p.weights);
-  Object.assign(state.toy, { losses: p.losses.slice(), quality: p.quality.map(q => q.slice()), epoch: p.losses.length, source: 'pretrained', note: 'pre' });
-  toySample();
-}
-function toySample(raw = false) {
-  cancelAnimationFrame(toyRun.raf);
-  const layers = raw ? Toy.initParams(TOY_SEED) : toyRun.layers;
-  if (raw) { state.toy.note = 'raw'; if (state.toy.source === 'none') state.toy.source = 'untrained'; }
-  toyRun.sampleSeed++;
-  toyRun.sampler = Toy.createSampler(layers, TOY_POINTS, toyRun.sampleSeed);
-  Object.assign(state.toy, { sampleT: Toy.T, previewEpoch: null, finalQ: null });
-  toySetPhase('sampling');
-  if (reduceMotion) { while (toyRun.sampler.step()); finishSample(); return; }
-  let frame = 0;
-  const loop = () => {
-    if (frame++ % 2 === 0) { toyRun.sampler.step(); state.toy.sampleT = toyRun.sampler.t + 1; drawPoints(toyRun.sampler.points); renderToyRead(); }
-    if (toyRun.sampler.t >= 0) toyRun.raf = requestAnimationFrame(loop); else finishSample();
-  };
-  drawPoints(toyRun.sampler.points);
-  toyRun.raf = requestAnimationFrame(loop);
-}
-function finishSample() {
-  state.toy.sampleT = 0;
-  state.toy.finalQ = Toy.quality(toyRun.sampler.points, state.toy.shape);
-  drawPoints(toyRun.sampler.points);
-  toySetPhase('done');
-}
-const shownPoints = () => (toyRun.sampler ? toyRun.sampler.points : toyRun.preview);
-
-const refCache = {};
-function drawPoints(pts) {
-  const cv = el.cvPoints, w = cv.clientWidth || 400, dpr = Math.min(2, window.devicePixelRatio || 1);
-  cv.width = cv.height = Math.round(w * dpr);
-  const ctx = cv.getContext('2d'), W = cv.width, s = W / 3.6, cx = W / 2, cy = W / 2;
-  ctx.fillStyle = '#F5F3F0'; ctx.fillRect(0, 0, W, W);
-  const ref = refCache[state.toy.shape] ??= Toy.sampleShape(state.toy.shape, 1500, 5);
-  ctx.fillStyle = '#C9C2B7';                                     // the target shape, faint (--line-2)
-  for (let i = 0; i < ref.length; i += 2) ctx.fillRect(cx + ref[i] * s - dpr, cy - ref[i + 1] * s - dpr, 2 * dpr, 2 * dpr);
-  if (!pts) return;
-  ctx.fillStyle = '#1C1917';                                     // --ink
-  const rad = 2.2 * dpr;
-  for (let i = 0; i < pts.length; i += 2) {
-    const x = cx + pts[i] * s, y = cy - pts[i + 1] * s;
-    if (x < -5 || y < -5 || x > W + 5 || y > W + 5) continue;
-    ctx.beginPath(); ctx.arc(x, y, rad, 0, 6.2832); ctx.fill();
-  }
-}
-// single-series line chart over epochs (ink line, stone grid, mono labels)
-function drawLine(cv, pts, yMax, ticks, fmt) {
-  const dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth || 400, h = cv.clientHeight || 150;
-  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-  const ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
-  const padL = 44 * dpr, padB = 22 * dpr, padT = 8 * dpr, padR = 10 * dpr;
-  const x = e => padL + (W - padL - padR) * e / TOY_EPOCHS, y = v => padT + (H - padT - padB) * (1 - Math.min(v, yMax) / yMax);
-  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H);
-  ctx.font = `${11 * dpr}px "Roboto Mono", monospace`; ctx.fillStyle = '#625B53'; ctx.strokeStyle = '#E0DBD3'; ctx.lineWidth = dpr;
-  for (const v of ticks) { ctx.beginPath(); ctx.moveTo(padL, y(v)); ctx.lineTo(W - padR, y(v)); ctx.stroke(); ctx.fillText(fmt(v), 2 * dpr, y(v) + 4 * dpr); }
-  for (const e of [0, Math.round(TOY_EPOCHS / 2), TOY_EPOCHS]) { ctx.textAlign = e ? (e === TOY_EPOCHS ? 'right' : 'center') : 'left'; ctx.fillText(String(e), e === 0 ? padL : x(e), H - 5 * dpr); }
-  ctx.textAlign = 'left';
-  if (!pts.length) return;
-  ctx.strokeStyle = '#1C1917'; ctx.fillStyle = '#1C1917'; ctx.lineWidth = 2.5 * dpr; ctx.lineJoin = 'round'; ctx.beginPath();
-  pts.forEach(([e, v], i) => (i ? ctx.lineTo(x(e), y(v)) : ctx.moveTo(x(e), y(v))));
-  ctx.stroke();
-  const [le, lv] = pts[pts.length - 1];
-  ctx.beginPath(); ctx.arc(x(le), y(lv), 4 * dpr, 0, 6.2832); ctx.fill();
-}
-function drawCharts() {
-  const L = state.toy.losses;
-  drawLine(el.cvLoss, L.map((v, i) => [i + 1, v]), 1.0, [0, 0.5, 1.0], v => fmtNum(v, 1));
-  drawLine(el.cvQuality, state.toy.quality.map(([e, q]) => [e, 100 * q]), 100, [0, 50, 100], v => v + '%');
-}
-
-// ─── Render: toy ────────────────────────────────
-function currentQ() {
-  const s = state.toy;
-  if (s.finalQ != null) return s.finalQ;
-  return s.quality.length ? s.quality[s.quality.length - 1][1] : null;
-}
-function renderToyRead() {
-  const s = state.toy;
-  el.toy.dataset.sampleT = s.sampleT ?? '';
-  el.toyT.textContent = s.sampleT != null ? t('toyT', s.sampleT) : (s.previewEpoch != null ? t('toyPreview', s.previewEpoch) : '');
-}
-function renderToy() {
-  const s = state.toy, L = s.losses, last = L.length ? L[L.length - 1] : null, q = currentQ();
-  const pct = q == null ? null : Math.round(100 * q);
-  Object.assign(el.toy.dataset, { phase: s.phase, epoch: s.epoch, loss: last == null ? '' : last.toFixed(4), lossStart: L.length ? L[0].toFixed(4) : '', quality: pct ?? '', shape: s.shape, source: s.source });
-  $$('#shapes button').forEach(b => { setActive(b, b.dataset.shape === s.shape); b.disabled = s.phase === 'training' || s.phase === 'sampling'; });
-  el.toyEpoch.textContent = s.epoch;
-  el.toyLoss.textContent = fmtLoss(last);
-  el.toyQ.textContent = pct == null ? '–' : pct + '%';
-  el.toyPhase.textContent = t('phase_' + s.phase);
-  const trained = Boolean(toyRun.layers);
-  el.btnTrain.textContent = s.phase === 'training' ? t('btnStop') : (trained ? t('btnRetrain') : t('btnTrain'));
-  el.btnTrain.disabled = s.phase === 'sampling';
-  el.btnPre.disabled = s.phase === 'training' || s.phase === 'sampling';
-  el.btnSample.textContent = trained ? t('btnSample') : t('btnSampleRaw');
-  el.btnSample.disabled = s.phase === 'training' || s.phase === 'sampling';
-  const a = L.length ? fmtLoss(L[0]) : '', b = fmtLoss(last), first = s.quality.length ? Math.round(100 * s.quality[0][1]) : 0;
-  const notes = {
-    idle: () => t('noteIdle', fmtInt(Toy.N_PARAMS), PREVIEW_EVERY), training: () => t('noteTraining', s.leftS), slow: () => t('noteSlow', s.slowS),
-    done: () => t('noteDone', a, b, first, pct), raw: () => t('noteRaw', pct ?? 0), pre: () => t('notePre', a, b, first, pct ?? '…'),
-  };
-  el.toyNoteText.textContent = s.phase === 'sampling' ? t('noteSampling') : (notes[s.note] || notes.idle)();
-  el.toyNote.classList.toggle('warn', s.note === 'slow' || s.note === 'raw');
-  renderToyRead();
-  drawCharts();
-  renderProgress();
-}
-
 // ─── Event listeners ────────────────────────────
 document.addEventListener('click', e => {
   const b = e.target.closest('button');
@@ -948,10 +663,6 @@ document.addEventListener('click', e => {
   else if (d.steps) { state.steps = +d.steps; resolve('steps'); state.lastControl = 'steps'; replay(); return; }
   else if (b.classList.contains('thumb')) { setStep(+d.k); return; }
   else if (b === el.play) { state.playing ? stop() : play(); }
-  else if (d.shape) { state.toy.shape = d.shape; toyReset(); return; }
-  else if (b === el.btnTrain) { state.toy.phase === 'training' ? toyStop() : toyTrain(); return; }
-  else if (b === el.btnPre) { toyLoadPretrained(); return; }
-  else if (b === el.btnSample) { toySample(!toyRun.layers); return; }
   else return;
   preload(currentCase());
   renderGen();
@@ -978,12 +689,9 @@ function setView(v) {
   if (state.view !== 'gen') stop();
   if (location.hash.slice(1) !== state.view) history.replaceState(null, '', '#' + state.view);
   renderView();
-  if (state.view === 'train') { drawPoints(shownPoints()); drawCharts(); }
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', () => setView(location.hash.slice(1)));
-let resizeT;
-window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { if (state.view === 'train') { drawPoints(shownPoints()); drawCharts(); } }, 150); });
 
 // ─── Init ───────────────────────────────────────
 (function init() {
@@ -993,7 +701,6 @@ window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTi
   preload(currentCase());
   renderForward();
   setupForward();
-  drawPoints(null);
   announce();
   // ─── Reveal ───
   const FONT_WAIT_MS = 1500;
@@ -1003,7 +710,6 @@ window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTi
     new Promise(r => setTimeout(r, FONT_WAIT_MS)),
   ]).then(() => {
     document.documentElement.classList.add('app-ready');
-    if (state.view === 'train') { drawPoints(shownPoints()); drawCharts(); }
   });
 })();
 </script>

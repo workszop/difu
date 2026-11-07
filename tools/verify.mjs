@@ -22,7 +22,6 @@ async function open(url, opts = {}) {
   return { ctx, page, errors };
 }
 const gen = page => page.evaluate(() => ({ ...document.querySelector('#gen').dataset }));
-const toy = page => page.evaluate(() => ({ ...document.querySelector('#toy').dataset }));
 const imgsOk = page => page.evaluate(() => [...document.querySelectorAll('#img-now, #img-pred:not([hidden])')].every(i => i.complete && i.naturalWidth > 0));
 
 if (ONLY === 'all' || ONLY === 'gen') {
@@ -80,38 +79,11 @@ if (ONLY === 'all' || ONLY === 'gen') {
 
 if (ONLY === 'all' || ONLY === 'train') {
   const { ctx, page, errors } = await open(APP + '#train');
-  let d = await toy(page);
-  check('toy contract attrs', d.phase === 'idle' && d.epoch === '0', JSON.stringify(d));
   check('forward card data-t', await page.evaluate(() => document.querySelector('#fwd').dataset.t === '0.40'));
   await page.fill('#fwd-slider', '100');
   check('t=1 → 100% noise', await page.evaluate(() => document.querySelector('#fwd').dataset.noise === '100'));
   await page.fill('#fwd-slider', '40');
-  // untrained sampling
-  await page.click('#btn-sample');
-  await page.waitForFunction(() => document.querySelector('#toy').dataset.phase === 'done', null, { timeout: 15000 });
-  d = await toy(page); check('raw sampling works', d.source === 'untrained', d.source);
-  const t0 = Date.now();
-  await page.click('#btn-train');
-  await page.waitForFunction(() => document.querySelector('#toy').dataset.phase === 'training', null, { timeout: 3000 });
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: OUT + 'app_train_1440_training.png', fullPage: false });
-  await page.waitForFunction(() => document.querySelector('#toy').dataset.phase === 'sampling', null, { timeout: 90000 });
-  const trainS = (Date.now() - t0) / 1000;
-  d = await toy(page);
-  check('live training under ~30 s', trainS < 32, `${trainS.toFixed(1)} s`);
-  check('loss after training < loss at start', +d.loss < +d.lossStart, `${d.lossStart} → ${d.loss}`);
-  check('all epochs done', d.epoch === String(await page.evaluate(() => TOY_EPOCHS)), d.epoch);
-  await page.waitForFunction(() => document.querySelector('#toy').dataset.phase === 'done', null, { timeout: 15000 });
-  d = await toy(page); check('sampling done, t=0', d.sampleT === '0');
-  d = await toy(page); check('≥90% generated dots on the shape (data-quality)', +d.quality >= 90, d.quality + '%');
-  check('quality rose during training', await page.evaluate(() => state.toy.quality.length >= 10 && state.toy.quality[0][1] < 0.2));
-  await page.locator('#toy').scrollIntoViewIfNeeded();
-  await page.screenshot({ path: OUT + 'app_train_1440_toy.png' });
-  // pretrained fish
-  await page.click('#shapes button:nth-child(2)');
-  await page.click('#btn-pre');
-  await page.waitForFunction(() => document.querySelector('#toy').dataset.phase === 'done', null, { timeout: 15000 });
-  d = await toy(page); check('pretrained fallback', d.source === 'pretrained' && d.shape === 'fish' && +d.loss < +d.lossStart, `${d.lossStart} → ${d.loss}`);
+  check('small model removed', await page.evaluate(() => !document.querySelector('#toy') && typeof window.Toy === 'undefined' && document.querySelectorAll('#train table thead th').length === 2));
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: OUT + 'app_train_1440_top.png' });
   await page.screenshot({ path: OUT + 'app_train_1440_full.png', fullPage: true });
@@ -137,9 +109,6 @@ if (ONLY === 'all' || ONLY === 'reduced') {
   check('reduced motion: final state at once', g.step === g.steps, `${g.step}/${g.steps}`);
   await page.click('#play'); g = await gen(page);
   check('reduced motion: play jumps to the end', g.step === g.steps && g.playing === 'false');
-  await page.click('[data-tab=train]');
-  await page.click('#btn-pre');
-  check('reduced motion: sampling final at once', (await toy(page)).phase === 'done');
   await ctx.close();
 }
 

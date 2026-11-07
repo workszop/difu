@@ -15,10 +15,7 @@ Open `index.html` – no build step, no server, no API calls, works offline and 
 image, x0). 3 prompts (kot w kapeluszu, logo piekarni, miska z owocami); seed, guidance and steps switches; slider, play/pause, step strip.
 
 **Trening** – one training example on a real photo (add noise at t, the target is the noise);
-a tiny diffusion model (9,154 parameters, 3-layer MLP in plain JS in `toy.js`) trained live in the browser on a
-2-D dot shape (heart / fish / letter Q). A table maps it to Stable Diffusion (one dot = one example, the shape = what correct examples look like). During training a preview every 25 epochs shows what the model would generate, with two charts: the loss (flattens fast, the noise is random so it cannot reach zero) and the share of dots on the shape (keeps rising, ~1% → 94-97%). Then 1000 dots are generated from noise;
-pre-trained weights as a fallback for slow devices; a sourced scale table; a fold on training data
-and copyright.
+a sourced table on the scale of training Stable Diffusion; a fold on training data and copyright.
 
 ## Model and settings (Generowanie)
 
@@ -47,15 +44,12 @@ Seed and guidance vary one at a time (not every seed × every guidance), which k
    checks the invariants (every frame present, step 0 noisier than the last step, noise schedule ends
    at 0, budget). `rm -r assets/gen && unzip diffusion_frames.zip && rm assets/gen/_meta.json`.
    (`tools/pack_frames.py` is the older AVIF route for large frames; not needed at 50 px.)
-3. **Toy weights:** `node tools/pretrain_toy.js` → `assets/toy-weights.js` (same code and settings
-   as the live training).
 
 ## Verification
 
 `tools/verify.mjs` checks the DOM contract and invariants with Playwright: start at noise, last
 step shows the final image, arrows / space, seed / guidance / steps switches, every case decodes,
-PL/EN, live training < ~30 s with loss falling, ≥ 90 % of dots on the shape and the share rising during training, pre-trained
-fallback, 390 px without horizontal scroll, reduced motion shows the final state at once, offline
+PL/EN, the training example (noise slider), 390 px without horizontal scroll, reduced motion shows the final state at once, offline
 over http and `file://`.
 
 ```bash
@@ -64,8 +58,7 @@ PLAYWRIGHT=/path/to/playwright/index.mjs CHROME=/usr/bin/google-chrome node tool
 ```
 
 DOM contract: `#gen[data-view data-case data-step data-steps data-seed data-guidance data-prompt
-data-playing data-noise]`, `#toy[data-phase(idle|training|sampling|done) data-epoch data-loss
-data-loss-start data-shape data-source data-sample-t]`, `#fwd[data-t data-noise]`.
+data-playing data-noise]`, `#fwd[data-t data-noise]`.
 
 ## Sources for the scale table
 

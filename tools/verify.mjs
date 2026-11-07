@@ -41,7 +41,7 @@ if (ONLY === 'all' || ONLY === 'gen') {
   await page.waitForFunction(() => document.querySelector('#gen').dataset.playing === 'false', null, { timeout: 10000 });
   g = await gen(page); check('playback ends at last step', g.step === g.steps && g.noise === '0', `step=${g.step}/${g.steps} noise=${g.noise}`);
   const last = await page.evaluate(() => document.querySelector('#img-now').getAttribute('src'));
-  check('last step shows the final image c{N}', last.endsWith(`/c${String(g.steps).padStart(2, '0')}.avif`), last);
+  check('last step shows the final image c{N}', /\/c\d{2}\.(webp|avif)$/.test(last) && last.includes(`/c${String(g.steps).padStart(2, '0')}.`), last);
   await page.waitForTimeout(300);
   check('images load at last step', await imgsOk(page));
   await page.screenshot({ path: OUT + 'app_gen_1440_final.png' });
@@ -64,7 +64,7 @@ if (ONLY === 'all' || ONLY === 'gen') {
   const bad = await page.evaluate(async () => {
     const out = [];
     for (const c of window.DIFFUSION_DATA.cases) for (const f of ['c00', `c${String(c.steps).padStart(2, '0')}`, `p${String(c.steps).padStart(2, '0')}`]) {
-      const im = new Image(); im.src = `assets/gen/${c.id}/${f}.avif`;
+      const im = new Image(); im.src = `assets/gen/${c.id}/${f}.${window.DIFFUSION_DATA.format || 'webp'}`;
       try { await im.decode(); } catch { out.push(c.id + '/' + f); }
     }
     return out;

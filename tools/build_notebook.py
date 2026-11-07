@@ -71,8 +71,6 @@ PROMPTS = [
      "a photo of a ginger cat wearing a small straw hat, studio light, sharp focus"),
     ("logo",     "logo piekarni",                "a bakery logo",
      "a simple flat vector logo for a bakery, a loaf of bread and wheat, two colours, white background"),
-    ("rower",    "czerwony rower w deszczu",     "a red bicycle in the rain",
-     "a red bicycle leaning on a wall on a rainy city street, reflections, photo"),
     ("owoce",    "miska z owocami",              "a bowl of fruit",
      "a ceramic bowl with apples, pears and grapes on a wooden table, soft daylight, photo"),
 ]

@@ -15,7 +15,7 @@ Open `index.html` – no build step, no server, no API calls, works offline and 
 image, x0). 3 prompts (kot w kapeluszu, logo piekarni, miska z owocami); seed, guidance and steps switches; slider, play/pause, step strip.
 
 **Trening** – one training example on a real photo (add noise at t, the target is the noise);
-a simple illustrated walk through how Stable Diffusion works (text encoder, latent map, denoising loop, decoder) on real frames; a sourced table on the scale of training Stable Diffusion; a fold on training data and copyright.
+a simple illustrated walk through how Stable Diffusion works (text encoder, latent map, denoising loop, decoder) on real frames; a fold on training data and copyright.
 
 ## Model and settings (Generowanie)
 
@@ -60,14 +60,6 @@ PLAYWRIGHT=/path/to/playwright/index.mjs CHROME=/usr/bin/google-chrome node tool
 DOM contract: `#gen[data-view data-case data-step data-steps data-seed data-guidance data-prompt
 data-playing data-noise]`, `#fwd[data-t data-noise]`.
 
-## Sources for the scale table
-
-1. [CompVis Stable Diffusion v1 README](https://github.com/CompVis/stable-diffusion#stable-diffusion-v1) – 860M UNet, 123M text encoder
-2. [SD v1-5 model card](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5) – LAION-2B(en) subsets, steps per checkpoint, 32×8 A100, batch 2048, 150,000 A100 hours (whole v1 family, authors' estimate)
-3. [LAION-5B](https://laion.ai/blog/laion-5b/) – 5.85 billion pairs, 2.3 billion in English
-
-The "Skąd się biorą dane?" fold names lawsuits and AI Act Art. 53 duties in general terms;
-check the legal status before each workshop.
 
 ## Credits
 

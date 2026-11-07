@@ -157,17 +157,6 @@ input[type=range] { accent-color: var(--ink); width: 100%; height: 28px; cursor:
 .caption-quote { font-family: var(--font-display); font-size: 21px; font-weight: 600; color: var(--ink); line-height: 1.3; }
 .readline { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .readline .big { font-size: 34px; }
-.table-card { padding: 0; }
-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-th { text-align: left; padding: 12px 16px; background: var(--paper-3); border-bottom: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); }
-td { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; }
-tbody tr:nth-child(even) td { background: var(--paper-2); }
-tbody tr:last-child td { border-bottom: none; }
-td:first-child { color: var(--ink); font-weight: 600; }
-td.big-cell { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
-sup a { font-family: var(--font-mono); font-size: 11px; text-decoration: none; }
-.sources { margin-top: 14px; font-size: 14px; }
-.sources li { margin-bottom: 4px; color: var(--ink-2); }
 details.more { margin-top: 20px; border: 1px solid var(--line-2); border-radius: var(--r-md); background: var(--surface); }
 details.more summary { cursor: pointer; padding: 14px 18px; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--ink); }
 details.more .more-body { padding: 0 18px 18px; display: grid; gap: 10px; }
@@ -198,7 +187,6 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
   .ahas, .story { grid-template-columns: 1fr; }
   kbd, .kbd-hint { display: none; }
   table { font-size: 14px; }
-  th, td { padding: 10px 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -334,27 +322,6 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
       </li>
     </ol>
     <p class="how-note" data-i18n="howNote"></p>
-  </section>
-
-  <section class="sec stone" aria-labelledby="h-scale">
-    <div class="sec-head"><span class="badge badge-lg tone-green"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><h2 id="h-scale" data-i18n="scaleH"></h2></div>
-    <div class="card table-card"><div style="overflow-x:auto">
-      <table>
-        <thead><tr><th></th><th data-i18n="colSd"></th></tr></thead>
-        <tbody>
-          <tr><td data-i18n="rowParams"></td><td class="big-cell"><span data-i18n="sdParams"></span> <sup><a href="#src1">[1]</a></sup></td></tr>
-          <tr><td data-i18n="rowData"></td><td><span data-i18n="sdData"></span> <sup><a href="#src2">[2]</a> <a href="#src3">[3]</a></sup></td></tr>
-          <tr><td data-i18n="rowSteps"></td><td><span data-i18n="sdSteps"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
-          <tr><td data-i18n="rowHw"></td><td><span data-i18n="sdHw"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
-          <tr><td data-i18n="rowTime"></td><td><span data-i18n="sdTime"></span> <sup><a href="#src2">[2]</a></sup></td></tr>
-        </tbody>
-      </table>
-    </div></div>
-    <ol class="sources">
-      <li id="src1"><a href="https://github.com/CompVis/stable-diffusion#stable-diffusion-v1" data-i18n="src1"></a></li>
-      <li id="src2"><a href="https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5" data-i18n="src2"></a></li>
-      <li id="src3"><a href="https://laion.ai/blog/laion-5b/" data-i18n="src3"></a></li>
-    </ol>
     <details class="more" id="data-fold">
       <summary data-i18n="dataQ"></summary>
       <div class="more-body">
@@ -365,6 +332,7 @@ footer p { color: var(--ink-2); margin-bottom: 6px; }
       </div>
     </details>
   </section>
+
 </div>
 </main>
 
@@ -432,17 +400,6 @@ const T = {
     how4: 'Na koniec dekoder rozpakowuje gotową mapę 64 × 64 do obrazu 512 × 512 i odtwarza drobne szczegóły.',
     how4Alt: 'Gotowy obraz: miska z owocami',
     howNote: 'Dlatego w widoku Generowanie szum wygląda jak kolorowa mozaika: każdy krok to ta mapa zamieniona z powrotem na obraz.',
-    scaleH: 'Skala prawdziwego modelu',
-    colSd: 'Stable Diffusion 1.5',
-    rowParams: 'Parametry', rowData: 'Dane treningowe', rowSteps: 'Kroki treningu', rowHw: 'Sprzęt', rowTime: 'Czas obliczeń',
-    sdParams: 'ok. 1 mld (860 mln sieć odszumiająca + 123 mln enkoder tekstu)',
-    sdData: 'podzbiory LAION-2B(en): 2,3 mld par obraz–opis z internetu',
-    sdSteps: 'v1-1 i v1-2: 431 tys. + 515 tys., potem v1-5: 595 tys. kroków po 2048 obrazów',
-    sdHw: '256 kart A100 (32 × 8)',
-    sdTime: 'ok. 150 000 godzin pracy kart A100 (szacunek autorów, cała rodzina v1)',
-    src1: 'CompVis, README Stable Diffusion v1: rozmiar sieci',
-    src2: 'Karta modelu Stable Diffusion v1-5 (Hugging Face): dane, kroki, sprzęt, czas',
-    src3: 'LAION-5B: 5,85 mld par, w tym 2,3 mld po angielsku',
     dataQ: 'Skąd się biorą dane?',
     data1: 'Pary obraz–opis zbiera się z internetu. LAION-5B to 5,85 mld linków do obrazków z ich tekstem alternatywnym, wyciągniętych z archiwum Common Crawl i przefiltrowanych modelem CLIP. Zbiór zawiera linki, nie same pliki.',
     data2: 'Autorzy tych obrazów nie byli pytani o zgodę. Stąd spory sądowe o prawa autorskie, np. Getty Images przeciw Stability AI czy grupa artystów przeciw twórcom generatorów.',
@@ -492,17 +449,6 @@ const T = {
     how4: 'At the end the decoder unpacks the finished 64 × 64 map into a 512 × 512 picture and restores the fine details.',
     how4Alt: 'Finished picture: a bowl of fruit',
     howNote: 'That is why the noise in the Generation view looks like a colourful mosaic: every step is this map turned back into a picture.',
-    scaleH: 'Scale of a real model',
-    colSd: 'Stable Diffusion 1.5',
-    rowParams: 'Parameters', rowData: 'Training data', rowSteps: 'Training steps', rowHw: 'Hardware', rowTime: 'Compute time',
-    sdParams: 'about 1 billion (860 M denoising network + 123 M text encoder)',
-    sdData: 'subsets of LAION-2B(en): 2.3 billion image–caption pairs from the web',
-    sdSteps: 'v1-1 and v1-2: 431 k + 515 k, then v1-5: 595 k steps of 2048 images',
-    sdHw: '256 A100 GPUs (32 × 8)',
-    sdTime: 'about 150,000 A100 GPU hours (authors\' estimate, whole v1 family)',
-    src1: 'CompVis, Stable Diffusion v1 README – network size',
-    src2: 'Stable Diffusion v1-5 model card (Hugging Face) – data, steps, hardware, time',
-    src3: 'LAION-5B – 5.85 billion pairs, 2.3 billion of them in English',
     dataQ: 'Where does the data come from?',
     data1: 'Picture–caption pairs are collected from the web. LAION-5B is 5.85 billion links to images with their alt text, extracted from the Common Crawl archive and filtered with the CLIP model. The dataset holds links, not the files.',
     data2: 'The authors of these images were not asked for consent. Hence copyright lawsuits, e.g. Getty Images v. Stability AI, or a group of artists against generator makers.',

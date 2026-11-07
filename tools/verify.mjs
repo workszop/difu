@@ -83,7 +83,7 @@ if (ONLY === 'all' || ONLY === 'train') {
   await page.fill('#fwd-slider', '100');
   check('t=1 → 100% noise', await page.evaluate(() => document.querySelector('#fwd').dataset.noise === '100'));
   await page.fill('#fwd-slider', '40');
-  check('small model removed', await page.evaluate(() => !document.querySelector('#toy') && typeof window.Toy === 'undefined' && document.querySelectorAll('#train table thead th').length === 2));
+  check('small model + scale table removed, how-it-works + data fold present', await page.evaluate(() => !document.querySelector('#toy') && typeof window.Toy === 'undefined' && !document.querySelector('#h-scale') && !!document.querySelector('#h-how') && !!document.querySelector('#data-fold')));
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: OUT + 'app_train_1440_top.png' });
   await page.screenshot({ path: OUT + 'app_train_1440_full.png', fullPage: true });

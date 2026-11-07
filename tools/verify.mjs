@@ -52,7 +52,7 @@ if (ONLY === 'all' || ONLY === 'gen') {
   check('seed aha highlighted', await page.evaluate(() => document.querySelector('.aha.on')?.dataset.aha === 'seed'));
   await page.click('#guids button:nth-child(3)'); g = await gen(page);
   check('guidance switch resets seed', g.guidance === 'high' && g.seed === '11', g.case);
-  check('steps switch hidden for lighthouse', await page.evaluate(() => document.querySelector('#grp-steps').hidden));
+  check('steps switch hidden for the fruit bowl', await page.evaluate(() => document.querySelector('#grp-steps').hidden));
   await page.click('#prompts button:nth-child(1)');
   check('steps switch shown for the cat, all 3 options', await page.evaluate(() => !document.querySelector('#grp-steps').hidden && [...document.querySelectorAll('#stepsSeg button')].every(b => !b.hidden)));
   await page.click('#stepsSeg button:nth-child(1)'); g = await gen(page);

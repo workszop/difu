@@ -572,7 +572,7 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 const caseById = Object.fromEntries(DATA.cases.map(c => [c.id, c]));
 const state = {
   view: 'gen',
-  prompt: DATA.prompts[1].id,                // lighthouse: the clearest noise-to-picture run
+  prompt: 'owoce',                           // fruit bowl: the clearest noise-to-picture run
   seed: DATA.seeds[0], guidance: 'mid', steps: DATA.default_steps,
   step: 0, playing: false, lastControl: null,
   fwdT: 0.4,

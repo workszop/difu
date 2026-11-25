@@ -65,3 +65,12 @@ data-playing data-noise]`, `#fwd[data-t data-noise]`.
 
 Cat photo: Marko Milivojevic (pixnio.com) via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Domestic_shorthair_cat_portrait_in_grass.jpg), CC0.
 Icons: [Lucide](https://lucide.dev) (ISC), inlined.
+
+## Imagine (`imagine/`)
+
+`imagine/index.html` – type a description and every pause in typing repaints a 512×512 picture,
+in the browser on your own GPU (WebGPU). A port of the Hugging Face Space
+[cfahlgren1/imagine](https://huggingface.co/spaces/cfahlgren1/imagine) (MIT) to one vanilla HTML file in the edulab look,
+without the example prompts and sample pictures. Model: `cfahlgren1/MiniT2I-B-16-MF-compact-webgpu-int8`
+(~314 MB, downloaded from Hugging Face on first visit, kept in Cache Storage), run with onnxruntime-web 1.22.0 from jsDelivr.
+Needs Chrome/Edge with WebGPU; serve over http(s) (`python3 -m http.server`), not `file://`.

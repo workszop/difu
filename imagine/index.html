@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Pisz, a model maluje obraz 512 × 512 na twojej karcie graficznej, w przeglądarce.">
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg?v=1">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=1">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png?v=1">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1">
+<meta name="theme-color" content="#FFD500">
+<title>Wyobraź sobie – edulab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.webgpu.min.mjs" crossorigin>
+<style>
+  @keyframes boot-reveal { to { visibility: visible; } }
+  html:not(.app-ready) body { visibility: hidden; animation: boot-reveal 0s 4s forwards; }
+  @media print { html:not(.app-ready) body { visibility: visible; animation: none; } }
+</style>
+<noscript><style>html:not(.app-ready) body { visibility: visible; animation: none; }</style></noscript>
+<style>
+/* ─── edulab tokens (edustyl tokens/colors_and_type.css) ─── */
+/* ============================================================
+   edulab - Colors & Type foundation
+   Fonts (Outfit, IBM Plex Sans, Roboto Mono) load from Google Fonts
+   via the <link> tags in tokens/head.html - paste that into <head>.
+   No CSS import here: it chains requests and blocks rendering.
+   ============================================================ */
+
+:root {
+  /* ---- Brand fonts ---- */
+  --font-display: 'Outfit', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans:    'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    'Roboto Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ============================================================
+     RAW COLOR TOKENS
+     ============================================================ */
+
+  /* Paper - page background is white; the stone steps are bands / wells.
+     Warm neutral grey (no yellow cast) so yellow and the colour blocks stay the
+     loudest thing on the page. Stone v2 (2026-10-10) replaced the cream sand
+     (#FBF7E6 / #F5EDCB), which at 1.07:1 on white did not read as a surface. */
+  --paper:    #FFFFFF;   /* page background (white)                       */
+  --paper-2:  #F5F3F0;   /* stone band: alternating sections, card heads   */
+  --paper-3:  #EAE6E0;   /* deepest stone: wells, table heads, bar tracks  */
+  --surface:  #FFFFFF;   /* cards & sheets                                */
+
+  /* Ink - warm near-black text & lines */
+  --ink:      #1C1917;   /* primary text                                    */
+  --ink-2:    #44403C;   /* secondary text, 10.3:1 on white                 */
+  --ink-3:    #625B53;   /* muted / placeholder: >= 4.5:1 on every paper step */
+  --line:     #E0DBD3;   /* hairline: dividers, table rows, card heads      */
+  --line-2:   #C9C2B7;   /* stronger: card contours, section rules          */
+  --line-strong: #857C69;/* control boundaries (inputs, ghost buttons,
+                            answer options): >= 3:1 on paper steps (WCAG 1.4.11) */
+
+  /* ---- Brand: Yellow main · Blue + Green secondary · Red danger ----
+     Plain saturated colours. The base colour (--blue) is for large fills,
+     illustrations and large text (>= 24px, or 19px bold). "-soft" is the
+     solid fill for chips and panels that carry small text: it is the
+     AA shade (= "-600"), so its "-ink" (white; dark ink on yellow) reaches
+     4.5:1. A colour used AS text goes only on white and uses "-600".
+     Never colour-on-colour (no green text on green).
+     Gate: python3 scripts/check-contrast.py */
+
+  /* Yellow - primary (buttons, progress, values on dark panels) */
+  --yellow:      #FFD500;
+  --yellow-600:  #F0C800;  /* hover / press          */
+  --yellow-soft: #FFD500;  /* chip / panel fill      */
+  --yellow-ink:  #1C1917;  /* text on yellow         */
+
+  /* Blue - secondary (panels, chips, correct / selected state) */
+  --blue:      #1E8FC2;
+  --blue-600:  #177AA8;
+  --blue-soft: #177AA8;   /* = blue-600, white text 4.8:1 */
+  --blue-ink:  #FFFFFF;
+
+  /* Green - secondary support (chips, success) */
+  --green:      #00A651;
+  --green-600:  #078342;  /* hover / press, AA text shade */
+  --green-soft: #078342;  /* = green-600, white text 4.9:1 */
+  --green-ink:  #FFFFFF;
+
+  /* Red - danger / important / wrong (use sparingly) */
+  --red:      #E5322D;
+  --red-600:  #C92823;
+  --red-soft: #C92823;   /* = red-600, white text 5.5:1 */
+  --red-ink:  #FFFFFF;
+
+  /* Grape - 5th category tone (colour-coded groups), from the play palette */
+  --grape:      #7A5AC2;
+  --grape-soft: #7A5AC2;  /* white text 5.2:1 */
+  --grape-ink:  #FFFFFF;
+
+  /* Legacy role aliases - older edulab apps use these names */
+  --marigold: var(--yellow); --marigold-600: var(--yellow-600); --marigold-soft: var(--yellow-soft); --marigold-ink: var(--yellow-ink);
+  --teal:     var(--blue);   --teal-600:     var(--blue-600);   --teal-soft:     var(--blue-soft);   --teal-ink:     var(--blue-ink);
+  --sky:      var(--green);                                     --sky-soft:      var(--green-soft);  --sky-ink:      var(--green-ink);
+  --coral:    var(--red);    --coral-600:    var(--red-600);    --coral-soft:    var(--red-soft);    --coral-ink:    var(--red-ink);
+
+  /* Play palette - subject/category colours in the kids app */
+  --play-sun:    #FFD500;
+  --play-grass:  #00A651;
+  --play-berry:  #C6478B;
+  --play-grape:  #7A5AC2;
+  --play-sky:    #1E8FC2;
+  --play-coral:  #E5322D;
+
+  /* ---- Semantic ---- */
+  --success:      #00A651;  --success-soft: #078342;  --success-ink: #FFFFFF;
+  --warning:      #FFD500;  --warning-soft: #FFD500;  --warning-ink: #1C1917;
+  --danger:       #E5322D;  --danger-soft:  #C92823;  --danger-ink:  #FFFFFF;
+  --info:         #1E8FC2;  --info-soft:    #177AA8;  --info-ink:    #FFFFFF;
+
+  /* ---- Functional aliases ---- */
+  --bg:        var(--paper);
+  --fg:        var(--ink);
+  --fg-muted:  var(--ink-2);
+  --primary:   var(--yellow);
+  --on-primary:#1C1917;      /* dark text on yellow */
+  /* White gap + ink band: >= 3:1 on paper, sand, yellow and every chip fill.
+     Pair with `outline: 3px solid transparent` so forced-colours mode still shows focus. */
+  --focus-ring: 0 0 0 2px var(--paper), 0 0 0 5px var(--ink);
+  /* Range-slider track */
+  --track: color-mix(in srgb, var(--ink) 24%, transparent);
+
+  /* ============================================================
+     SPACING  (4pt base)
+     ============================================================ */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+
+  /* ---- Radii (friendly, generous) ---- */
+  /* Page gutter (user decision 2026-11-07): content ~70% of the viewport on wide screens
+     (15% margin each side from ~1280px), never squeezed below 900px, 16-72px on phones/tablets.
+     Every full-width band, header row, page head and footer pads its content with it. */
+  --gutter: max(clamp(16px, 4vw, 72px), min(15vw, calc((100vw - 900px) / 2)));
+  --r-xs: 6px; --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-pill: 999px;
+
+  /* ---- Elevation - warm, low, soft ---- */
+  --shadow-sm: 0 1px 2px rgba(33,30,26,.10), 0 2px 6px rgba(33,30,26,.06);
+  --shadow-md: 0 6px 18px rgba(33,30,26,.12), 0 1px 3px rgba(33,30,26,.08);
+  --shadow-lg: 0 16px 40px rgba(33,30,26,.12), 0 3px 8px rgba(33,30,26,.06);
+  --shadow-primary:  0 8px 22px color-mix(in srgb, var(--yellow) 30%, transparent);
+  --shadow-marigold: var(--shadow-primary);   /* legacy alias */
+
+  /* ============================================================
+     TYPE SCALE (semantic sizes)
+     ============================================================ */
+  --display-font:  clamp(48px, 6vw, 72px);
+  --h1: 44px; --h2: 33px; --h3: 25px; --h4: 19px;
+  --body-lg: 18px; --body: 16px; --body-sm: 14px;
+  --caption: 13px; --overline: 12px;
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT STYLES
+   Apply via element selectors or .edu-prose wrapper.
+   Element defaults are wrapped in :where(.edu) (zero specificity) so any
+   single class wins: <p class="edu-overline">, <p class="edu-small">,
+   <h1 class="app-title"> keep their own font/size instead of the element default.
+   ============================================================ */
+
+.edu-display, :where(.edu) h1.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--display-font);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+:where(.edu) h1, .edu-h1 {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: var(--h1);
+  line-height: 1.06; letter-spacing: -0.02em; color: var(--ink);
+}
+:where(.edu) h2, .edu-h2 {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: var(--h2);
+  line-height: 1.12; letter-spacing: -0.015em; color: var(--ink);
+}
+:where(.edu) h3, .edu-h3 {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: var(--h3);
+  line-height: 1.2; letter-spacing: -0.01em; color: var(--ink);
+}
+:where(.edu) h4, .edu-h4 {
+  font-family: var(--font-sans);
+  font-weight: 700; font-size: var(--h4);
+  line-height: 1.3; color: var(--ink);
+}
+:where(.edu) p, .edu-p, .edu-body {
+  font-family: var(--font-sans);
+  font-weight: 400; font-size: var(--body);
+  line-height: 1.6; color: var(--ink-2);
+}
+.edu-body-lg { font-family: var(--font-sans); font-size: var(--body-lg); line-height: 1.6; color: var(--ink-2); }
+.edu-small  { font-family: var(--font-sans); font-size: var(--body-sm); line-height: 1.5; color: var(--ink-2); }
+.edu-caption{ font-family: var(--font-sans); font-size: var(--caption); line-height: 1.45; color: var(--ink-3); }
+
+/* Overline - mono, tracked; functional labels only (never above page/section titles) */
+.edu-overline {
+  font-family: var(--font-mono);
+  font-weight: 500; font-size: var(--overline);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink);
+}
+:where(.edu) code, .edu-mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em; color: var(--ink);
+  background: var(--paper-3); padding: 0.12em 0.4em; border-radius: var(--r-xs);
+}
+
+/* Solid colour blocks (callouts, stat cards, chips): set background: var(--X-soft) and
+   color: var(--X-ink) on the block, add .edu-block, and every heading/paragraph inside
+   inherits that text colour instead of the default ink. */
+.edu-block, .edu-block h1, .edu-block h2, .edu-block h3, .edu-block h4, .edu-block p,
+.edu-block li, .edu-block small { color: inherit; }
+
+body.edu { background: var(--paper); color: var(--ink); font-family: var(--font-sans); }
+
+</style>
+<style>
+/* ─── base ─── */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 1.5; }
+h1, h2, h3 { font-family: var(--font-display); color: var(--ink); margin: 0; }
+p { margin: 0; color: var(--ink-2); line-height: 1.55; }
+a { color: var(--blue-600); }
+button { font: inherit; }
+:focus-visible { outline: 3px solid transparent; outline-offset: 2px; box-shadow: var(--focus-ring); }
+[hidden] { display: none !important; }
+.ov { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+.ic { width: 20px; height: 20px; flex: none; }
+
+/* ─── header ─── */
+.edu-header { position: sticky; top: 0; z-index: 20; background: var(--paper); border-bottom: 1px solid var(--line-2); }
+.edu-header-inner { padding: 6px var(--gutter); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.edu-logo { width: 64px; height: 64px; display: block; margin-right: -8px; }
+.edu-wordmark { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--ink); }
+.spacer { flex: 1; }
+.back { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--ink); text-decoration: none; padding: 8px 14px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); transition: background-color .15s; }
+.back:hover { background: var(--paper-2); }
+.back .ic { width: 18px; height: 18px; }
+
+/* segmented toggle: stone track, each option a full pill, active solid yellow */
+.seg { display: inline-flex; gap: 2px; padding: 3px; background: var(--paper-2); border-radius: var(--r-pill); }
+.seg button { border: none; background: transparent; padding: 8px 14px; border-radius: var(--r-pill); font-weight: 600; font-size: 15px; color: var(--ink-2); cursor: pointer; transition: background-color .15s; }
+.seg button:hover:not(.active) { background: var(--paper-3); }
+.seg button.active { background: var(--yellow); color: var(--yellow-ink); }
+
+/* ─── page head + sections ─── */
+.page-head { padding: 24px var(--gutter) 26px; }
+.app-title { font-weight: 800; font-size: clamp(2.3rem, 5vw, 3.3rem); letter-spacing: -.025em; line-height: 1.05; margin: 0 0 12px; }
+.lead { font-size: 1.15rem; line-height: 1.55; color: var(--ink-2); }
+.sec { padding: 26px var(--gutter) 40px; border-top: 1px solid var(--line); }
+.sec.stone { background: var(--paper-2); }
+.sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.sec-head h2 { font-size: 28px; line-height: 1.15; }
+.sec-head::after { content: ""; flex: 1; height: 1px; background: var(--line-2); }
+.badge { flex: none; width: 34px; height: 34px; border-radius: var(--r-sm); display: inline-grid; place-items: center; background: var(--ink); color: var(--yellow); }
+.badge-lg { width: 46px; height: 46px; border-radius: var(--r-md); }
+.badge-lg .ic { width: 24px; height: 24px; }
+.tone-grape { background: var(--grape-soft); color: var(--grape-ink); }
+.tone-blue { background: var(--blue-soft); color: var(--blue-ink); }
+.tone-green { background: var(--green-soft); color: var(--green-ink); }
+
+/* card anatomy */
+.card { background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.card-head { padding: 12px 18px; background: var(--paper-2); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; min-height: 60px; }
+.card-head h3 { font-size: 19px; line-height: 1.25; }
+.tile-h { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.card-body { padding: 20px; flex: 1; min-width: 0; }
+.card-foot { padding: 12px 18px; border-top: 1px dashed var(--line-2); display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+
+/* chips */
+.chip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 5px 11px; border-radius: var(--r-pill); background: var(--paper-3); color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chip.yellow { background: var(--yellow-soft); color: var(--yellow-ink); }
+.chip.green { background: var(--green-soft); color: var(--green-ink); }
+.chip.red { background: var(--red-soft); color: var(--red-ink); }
+.chip.blue { background: var(--blue-soft); color: var(--blue-ink); }
+
+/* buttons */
+.btn { font-family: var(--font-display); font-weight: 600; font-size: 16px; background: var(--yellow); color: var(--on-primary); border: none; border-radius: var(--r-pill); padding: 10px 20px; cursor: pointer; box-shadow: var(--shadow-primary); transition: background-color .15s; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover:not(:disabled) { background: var(--yellow-600); }
+.btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.btn .ic { width: 18px; height: 18px; }
+kbd { font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--line-strong); border-radius: var(--r-xs); padding: 1px 6px; background: var(--surface); color: var(--ink); }
+
+/* ─── workbench ─── */
+.bench { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, min(540px, calc(100vh - 380px))); gap: 24px; align-items: stretch; }
+.words .card-body { display: flex; flex-direction: column; gap: 22px; }
+
+/* the sentence: a transparent textarea over a coloured mirror of its text */
+.sentence { position: relative; font-family: var(--font-display); font-weight: 500; line-height: 1.12; letter-spacing: -.015em; font-size: var(--size); min-height: calc(3 * 1.12em); border: 1px solid var(--line-strong); border-radius: var(--r-md); padding: 16px 18px; background: var(--surface); cursor: text; }
+.sentence:focus-within { box-shadow: var(--focus-ring); }
+.sentence.xl { --size: clamp(34px, 3.6vw, 56px); }
+.sentence.lg { --size: clamp(30px, 3vw, 46px); }
+.sentence.md { --size: clamp(26px, 2.5vw, 38px); }
+.sentence.sm { --size: clamp(22px, 2vw, 30px); }
+.mirror, .sentence textarea { margin: 0; padding: 0; font: inherit; letter-spacing: inherit; white-space: pre-wrap; overflow-wrap: break-word; }
+.mirror { min-height: 1.12em; color: var(--ink); }
+.mirror em { font-style: normal; color: var(--blue-600); }
+.mirror .placeholder { color: var(--ink-3); }
+.sentence textarea { position: absolute; inset: 16px 18px; width: calc(100% - 36px); height: calc(100% - 32px); border: 0; outline: 0; resize: none; overflow: hidden; background: transparent; color: transparent; caret-color: var(--ink); }
+.sentence textarea:focus-visible { box-shadow: none; }
+.sentence textarea::selection { background: color-mix(in srgb, var(--blue) 25%, transparent); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); flex: none; }
+.dot.blue { background: var(--blue-600); }
+
+.film-wrap { display: flex; flex-direction: column; gap: 8px; }
+.film { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 6px; margin: 0 -4px; scrollbar-width: thin; min-height: 128px; }
+.film-empty { align-self: center; color: var(--ink-3); font-size: 14px; }
+.frame-btn { flex: none; width: 92px; padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; border-radius: var(--r-sm); }
+.frame-btn img { display: block; width: 92px; height: 92px; border-radius: var(--r-sm); object-fit: cover; background: var(--paper-3); border: 2px solid transparent; }
+.frame-btn span { display: block; margin-top: 5px; color: var(--ink-3); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.frame-btn.on img { border-color: var(--ink); }
+.frame-btn.on span { color: var(--ink); font-weight: 600; }
+.frame-btn:hover img { border-color: var(--line-strong); }
+.frame-btn.on:hover img { border-color: var(--ink); }
+.hint { font-size: 14px; color: var(--ink-2); }
+
+.picture .card-body { display: flex; flex-direction: column; gap: 14px; }
+.hero { position: relative; margin: 0; width: 100%; aspect-ratio: 1; border-radius: var(--r-md); overflow: hidden; background: var(--paper-3); border: 1px solid var(--line-2); }
+.hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero img.fresh { animation: arrive .24s ease-out; }
+.hero .empty { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; text-align: center; padding: 28px; }
+.hero .empty p { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--ink); }
+.hero .empty .sub { font-family: var(--font-sans); font-size: 15px; font-weight: 400; color: var(--ink-2); }
+.meter { width: 100%; max-width: 320px; height: 10px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--line-strong); overflow: hidden; }
+.meter span { display: block; height: 100%; width: 0; background: var(--yellow); transition: width .2s linear; }
+.alert { border-radius: var(--r-md); padding: 14px 16px; background: var(--red-soft); color: var(--red-ink); display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.45; }
+.alert p { color: inherit; }
+.caption { font-size: 15px; color: var(--ink-2); min-height: 1.5em; overflow-wrap: anywhere; }
+
+/* ─── receipt + credits ─── */
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.receipt { margin: 0; display: grid; gap: 0; font-variant-numeric: tabular-nums; }
+.receipt div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.receipt dt { color: var(--ink-2); }
+.receipt dd { margin: 0; font-weight: 600; color: var(--ink); text-align: right; }
+.receipt .total { border-bottom: 0; border-top: 1px dashed var(--line-2); margin-top: 4px; padding-top: 12px; }
+.receipt .total dt, .receipt .total dd { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--ink); }
+.credits { list-style: none; margin: 0; padding: 0; }
+.credits li { border-bottom: 1px solid var(--line); }
+.credits li:last-child { border-bottom: 0; }
+.credits a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; color: var(--ink); text-decoration: none; font-weight: 600; }
+.credits a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+.credits small { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--ink-2); text-align: right; }
+
+footer { padding: 26px var(--gutter) 40px; border-top: 1px solid var(--line-2); background: var(--paper-2); font-size: 14px; }
+footer p { color: var(--ink-2); }
+
+@keyframes arrive { from { opacity: 0; filter: blur(8px); } }
+
+@media (max-width: 900px) {
+  .bench { grid-template-columns: minmax(0, 1fr); }
+  .picture { order: -1; }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 768px) {
+  .edu-logo { width: 44px; height: 44px; margin-right: -6px; }
+  .edu-wordmark { font-size: 19px; }
+  .edu-header-inner { gap: 8px; }
+  .back-label { display: none; }
+  .seg button { padding: 7px 11px; font-size: 14px; }
+  .sec { padding: 24px var(--gutter) 32px; }
+  .sec-head h2 { font-size: 23px; }
+  .card-body { padding: 16px; }
+  .sentence.xl { --size: clamp(28px, 8vw, 40px); }
+  .sentence.lg { --size: clamp(25px, 7vw, 34px); }
+  .sentence.md { --size: clamp(22px, 6vw, 30px); }
+  .sentence.sm { --size: clamp(20px, 5vw, 26px); }
+  .frame-btn, .frame-btn img { width: 72px; }
+  .frame-btn img { height: 72px; }
+  .film { min-height: 108px; }
+  .kbd-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body class="edu">
+<header class="edu-header">
+  <div class="edu-header-inner">
+    <img class="edu-logo" alt="edulab" src="data:image/png;base64,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">
+    <span class="edu-wordmark">edulab</span>
+    <span class="spacer"></span>
+    <a class="back" href="../" data-i18n-aria="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span class="back-label" data-i18n="back"></span></a>
+    <div class="seg" role="group" aria-label="Język / Language">
+      <button type="button" data-lang="pl">PL</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1 class="app-title" data-i18n="title"></h1>
+    <p class="lead" data-i18n="lead"></p>
+  </div>
+
+  <section class="sec stone" aria-labelledby="h-bench">
+    <div class="sec-head"><span class="badge badge-lg"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg></span><h2 id="h-bench" data-i18n="benchH"></h2></div>
+
+    <div class="bench">
+      <article class="card words">
+        <div class="card-head">
+          <span class="tile-h"><span class="badge tone-blue"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 6.1H3"/><path d="M21 12.1H3"/><path d="M15.1 18H3"/></svg></span><h3 data-i18n="wordsH"></h3></span>
+          <span class="chip" data-i18n="english"></span>
+        </div>
+        <div class="card-body">
+          <div class="sentence xl" id="sentence">
+            <div class="mirror" id="mirror" aria-hidden="true"></div>
+            <textarea id="prompt" maxlength="600" rows="1" autocomplete="off" spellcheck="false" data-i18n-aria="promptAria"></textarea>
+          </div>
+          <div class="legend" aria-hidden="true">
+            <span><i class="dot"></i><span data-i18n="legendDone"></span></span>
+            <span><i class="dot blue"></i><span data-i18n="legendPending"></span></span>
+          </div>
+          <div class="film-wrap">
+            <span class="ov" data-i18n="filmH"></span>
+            <div class="film" id="film" role="list" data-i18n-aria="filmH"><p class="film-empty" id="film-empty" data-i18n="filmEmpty"></p></div>
+          </div>
+        </div>
+        <div class="card-foot">
+          <button type="button" class="btn" id="new-btn" disabled><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span data-i18n="newBtn"></span></button>
+          <p class="hint"><span data-i18n="hint"></span><span class="kbd-hint"> <span data-i18n="hintKey1"></span> <kbd>Enter</kbd> <span data-i18n="hintKey2"></span></span></p>
+        </div>
+      </article>
+
+      <article class="card picture">
+        <div class="card-head">
+          <span class="tile-h"><span class="badge tone-grape"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><h3 data-i18n="pictureH"></h3></span>
+          <span class="chip" id="status-chip" aria-live="polite"></span>
+        </div>
+        <div class="card-body">
+          <figure class="hero" id="hero">
+            <img id="hero-img" alt="" hidden>
+            <div class="empty" id="hero-empty">
+              <p id="empty-title"></p>
+              <div class="meter" id="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="meter-fill"></span></div>
+              <p class="sub" id="empty-sub"></p>
+            </div>
+          </figure>
+          <div class="alert" id="alert" role="alert" hidden><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg><p id="alert-text"></p></div>
+          <p class="caption" id="caption"></p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-about">
+    <div class="sec-head"><span class="badge badge-lg"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg></span><h2 id="h-about" data-i18n="aboutH"></h2></div>
+    <div class="pair">
+      <article class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge tone-green"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></span><h3 data-i18n="receiptH"></h3></span></div>
+        <div class="card-body">
+          <dl class="receipt">
+            <div><dt data-i18n="rSize"></dt><dd>512 × 512</dd></div>
+            <div><dt data-i18n="rTime"></dt><dd id="r-time">–</dd></div>
+            <div><dt data-i18n="rWhere"></dt><dd data-i18n="rWhereV"></dd></div>
+            <div><dt data-i18n="rSent"></dt><dd data-i18n="rSentV"></dd></div>
+            <div class="total"><dt data-i18n="rCost"></dt><dd data-i18n="rCostV"></dd></div>
+          </dl>
+        </div>
+        <div class="card-foot"><p class="hint" data-i18n="receiptFoot"></p></div>
+      </article>
+      <article class="card">
+        <div class="card-head"><span class="tile-h"><span class="badge"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3 data-i18n="creditsH"></h3></span></div>
+        <div class="card-body">
+          <ul class="credits">
+            <li><a href="https://huggingface.co/MiniT2I/MiniT2I-B-16-MF-jax" target="_blank" rel="noreferrer"><b>MiniT2I</b><small>Wang et al. · Kaiming He</small></a></li>
+            <li><a href="https://huggingface.co/lox9973/MiniT2I-B-16-MF-compact" target="_blank" rel="noreferrer"><b data-i18n="cCompact"></b><small>lox9973</small></a></li>
+            <li><a href="https://huggingface.co/cfahlgren1/MiniT2I-B-16-MF-compact-webgpu-int8" target="_blank" rel="noreferrer"><b data-i18n="cWebgpu"></b><small>ONNX · int8</small></a></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer><p data-i18n="footer"></p></footer>
+
+<script type="module">
+// ─── i18n ───
+const T = {
+  pl: {
+    docTitle: 'Wyobraź sobie – edulab',
+    back: 'Od szumu do obrazu',
+    title: 'Pisz, a model maluje',
+    lead: 'Opisz obraz, po każdej pauzie w pisaniu model tworzy go od nowa w twojej przeglądarce.',
+    benchH: 'Pracownia',
+    wordsH: 'Opis obrazu',
+    english: 'po angielsku',
+    promptAria: 'Opisz obraz (po angielsku)',
+    phReady: 'Describe anything…',
+    phLoading: 'Przygotowuję model…',
+    legendDone: 'już na obrazie',
+    legendPending: 'dopisane, czeka na pauzę',
+    filmH: 'Każda pauza, namalowana',
+    filmEmpty: 'Tu pojawi się każdy namalowany obraz.',
+    newBtn: 'Nowy obraz',
+    hint: 'Pisz dalej – każda pauza maluje obraz od nowa.',
+    hintKey1: 'Klawisz',
+    hintKey2: 'zaczyna nowy obraz z nowym ziarnem.',
+    pictureH: 'Obraz',
+    stLoading: 'Pobieram model',
+    stReady: 'Gotowe',
+    stPainting: 'Maluję…',
+    stError: 'Błąd',
+    stUnsupported: 'Brak WebGPU',
+    loadTitle: 'Pobieram model',
+    loadSub: (a, b) => `${a} / ${b} MB · tylko za pierwszym razem, potem z pamięci przeglądarki`,
+    loadSubStart: 'Łączę się z Hugging Face…',
+    loadCompile: 'Uruchamiam model na karcie graficznej…',
+    readyTitle: 'Obraz pojawi się tutaj',
+    readySub: 'Zacznij pisać po lewej, np. „A red fox in the snow”.',
+    errUnsupported: 'Ta strona potrzebuje WebGPU. Otwórz ją w Chrome lub Edge na laptopie albo komputerze.',
+    errGpu: 'Karta graficzna nie uruchomiła WebGPU. Spróbuj w Chrome lub Edge na laptopie.',
+    errMem: 'Za mało pamięci, żeby wczytać model na tym urządzeniu.',
+    errOther: 'Coś poszło nie tak przy wczytywaniu modelu. Odśwież stronę, żeby spróbować ponownie.',
+    took: (s) => `${s} s`,
+    aboutH: 'Jak powstał ten obraz',
+    receiptH: 'Paragon',
+    rSize: 'Obraz',
+    rTime: 'Czas malowania',
+    rWhere: 'Liczone na',
+    rWhereV: 'twojej karcie graficznej',
+    rSent: 'Wysłane do serwera',
+    rSentV: 'nic',
+    rCost: 'Koszt',
+    rCostV: '0 zł',
+    receiptFoot: 'Model (ok. 314 MB) pobiera się raz i zostaje w pamięci przeglądarki.',
+    creditsH: 'Skąd jest model',
+    cCompact: 'Model kompaktowy',
+    cWebgpu: 'Wagi dla WebGPU',
+    footer: 'Na podstawie aplikacji Imagine (cfahlgren1, licencja MIT). Model MiniT2I-B-16-MF-compact działa lokalnie przez ONNX Runtime Web i WebGPU.',
+  },
+  en: {
+    docTitle: 'Imagine – edulab',
+    back: 'From noise to picture',
+    title: 'Type and watch it paint',
+    lead: 'Describe a picture – every pause in your typing makes it again, in your browser.',
+    benchH: 'Workbench',
+    wordsH: 'Description',
+    english: 'in English',
+    promptAria: 'Describe a picture',
+    phReady: 'Describe anything…',
+    phLoading: 'Getting ready…',
+    legendDone: 'already in the picture',
+    legendPending: 'typed since, waits for a pause',
+    filmH: 'Every pause, painted',
+    filmEmpty: 'Every painted picture lands here.',
+    newBtn: 'New picture',
+    hint: 'Keep typing – every pause repaints the picture.',
+    hintKey1: 'Press',
+    hintKey2: 'to start a new one with a new seed.',
+    pictureH: 'Picture',
+    stLoading: 'Downloading',
+    stReady: 'Ready',
+    stPainting: 'Painting…',
+    stError: 'Error',
+    stUnsupported: 'No WebGPU',
+    loadTitle: 'Downloading the model',
+    loadSub: (a, b) => `${a} / ${b} MB · first visit only, then from the browser cache`,
+    loadSubStart: 'Connecting to Hugging Face…',
+    loadCompile: 'Starting the model on your GPU…',
+    readyTitle: 'Your picture appears here',
+    readySub: 'Start typing on the left, e.g. “A red fox in the snow”.',
+    errUnsupported: 'This needs WebGPU. Try Chrome or Edge on a laptop or desktop.',
+    errGpu: 'Your GPU couldn’t start WebGPU. Try Chrome or Edge on a laptop.',
+    errMem: 'Not enough memory to load the model on this device.',
+    errOther: 'Something went wrong loading the model. Reload to try again.',
+    took: (s) => `${s} s`,
+    aboutH: 'How this picture was made',
+    receiptH: 'Receipt',
+    rSize: 'Picture',
+    rTime: 'Painting time',
+    rWhere: 'Painted on',
+    rWhereV: 'your GPU',
+    rSent: 'Sent to a server',
+    rSentV: 'nothing',
+    rCost: 'Cost',
+    rCostV: '$0.00',
+    receiptFoot: 'The model (about 314 MB) downloads once and stays in the browser cache.',
+    creditsH: 'Where the model comes from',
+    cCompact: 'Compact model',
+    cWebgpu: 'WebGPU weights',
+    footer: 'Based on the Imagine app (cfahlgren1, MIT licence). The MiniT2I-B-16-MF-compact model runs locally through ONNX Runtime Web and WebGPU.',
+  },
+};
+let lang = localStorage.getItem('imagine-lang') || 'pl';
+if (!T[lang]) lang = 'pl';
+const t = (k) => T[lang][k];
+
+// ─── Engine (port of cfahlgren1/imagine src/lib/engine.ts + tokenizer.ts) ───
+const ORT_URL = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.webgpu.min.mjs';
+const MODEL_BASE = 'https://huggingface.co/cfahlgren1/MiniT2I-B-16-MF-compact-webgpu-int8/resolve/main/';
+const MODEL_MB = 314;
+const IMAGE_SIZE = 512;
+const PROMPT_LENGTH = 256;
+const NOISE_SCALE = 2;
+const CACHE_NAME = 'minit2i-onnx-v2';
+const PAD_ID = 0, EOS_ID = 1, UNK_ID = 2, FIRST_PIECE_ID = 3;
+
+class T5Tokenizer {
+  constructor(vocab) {
+    this.pieces = new Map();
+    let maxLength = 0, minScore = 0;
+    vocab.forEach(([piece, score], id) => {
+      if (id < FIRST_PIECE_ID) return;
+      this.pieces.set(piece, [id, score]);
+      maxLength = Math.max(maxLength, piece.length);
+      minScore = Math.min(minScore, score);
+    });
+    this.maxPieceLength = maxLength;
+    this.unkScore = minScore - 10;
+  }
+  encode(text) {
+    const words = text.normalize('NFKC').split(/\s+/).filter(Boolean);
+    const ids = words.flatMap((w) => this.encodeWord('▁' + w));
+    ids.push(EOS_ID);
+    return ids;
+  }
+  encodePadded(text, length) {
+    let tokens = this.encode(text);
+    if (tokens.length > length) tokens = [...tokens.slice(0, length - 1), EOS_ID];
+    const ids = new BigInt64Array(length).fill(BigInt(PAD_ID));
+    const mask = new BigInt64Array(length);
+    tokens.forEach((tok, i) => { ids[i] = BigInt(tok); mask[i] = 1n; });
+    return { ids, mask };
+  }
+  encodeWord(word) {
+    const n = word.length;
+    const best = new Array(n + 1).fill(-Infinity);
+    const back = new Array(n + 1);
+    best[0] = 0;
+    for (let i = 0; i < n; i++) {
+      if (best[i] === -Infinity) continue;
+      let hasSingleChar = false;
+      for (let len = 1; len <= this.maxPieceLength && i + len <= n; len++) {
+        const entry = this.pieces.get(word.slice(i, i + len));
+        if (!entry) continue;
+        if (len === 1) hasSingleChar = true;
+        const score = best[i] + entry[1];
+        if (score > best[i + len]) { best[i + len] = score; back[i + len] = [i, entry[0]]; }
+      }
+      if (!hasSingleChar && best[i] + this.unkScore > best[i + 1]) {
+        best[i + 1] = best[i] + this.unkScore;
+        back[i + 1] = [i, UNK_ID];
+      }
+    }
+    const out = [];
+    for (let j = n; j > 0; j = back[j][0]) out.push(back[j][1]);
+    out.reverse();
+    return out.filter((id, k) => !(id === UNK_ID && out[k - 1] === UNK_ID));
+  }
+}
+
+async function openCache() {
+  try {
+    for (const name of await caches.keys()) {
+      if (name.startsWith('minit2i-onnx-') && name !== CACHE_NAME) await caches.delete(name);
+    }
+    return await caches.open(CACHE_NAME);
+  } catch { return undefined; } // private windows, file:// and some browsers block Cache Storage
+}
+async function cachedSize(url) {
+  const hit = await openCache().then((c) => c?.match(url));
+  if (hit) return Number(hit.headers.get('content-length') ?? 0);
+  const head = await fetch(url, { method: 'HEAD' });
+  if (!head.ok) throw new Error(`Could not reach ${url} (${head.status})`);
+  return Number(head.headers.get('content-length') ?? 0);
+}
+async function readAll(body, expected, onBytes) {
+  const reader = body.getReader();
+  let buffer = new Uint8Array(expected || 1 << 20);
+  let length = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (length + value.length > buffer.length) {
+      const grown = new Uint8Array(Math.max(buffer.length * 2, length + value.length));
+      grown.set(buffer.subarray(0, length));
+      buffer = grown;
+    }
+    buffer.set(value, length);
+    length += value.length;
+    onBytes(length);
+  }
+  return length === buffer.length ? buffer : buffer.slice(0, length);
+}
+async function fetchCached(url, onBytes) {
+  const cache = await openCache();
+  const hit = await cache?.match(url);
+  if (hit) {
+    const bytes = new Uint8Array(await hit.arrayBuffer());
+    onBytes(bytes.length);
+    return bytes;
+  }
+  const res = await fetch(url);
+  if (!res.ok || !res.body) throw new Error(`Download failed for ${url} (${res.status})`);
+  const bytes = await readAll(res.body, Number(res.headers.get('content-length') ?? 0), onBytes);
+  try {
+    await cache?.put(url, new Response(bytes, { headers: { 'content-length': String(bytes.length) } }));
+  } catch (err) {
+    console.warn('Could not cache model file; it will download again next visit.', err);
+  }
+  return bytes;
+}
+function gaussianNoise(seed) {
+  let state = seed >>> 0;
+  const random = () => {
+    state = (state + 0x6d2b79f5) | 0;
+    let x = Math.imul(state ^ (state >>> 15), 1 | state);
+    x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+  const out = new Float32Array(3 * IMAGE_SIZE * IMAGE_SIZE);
+  for (let i = 0; i < out.length; i += 2) {
+    const radius = NOISE_SCALE * Math.sqrt(-2 * Math.log(1 - random()));
+    const angle = 2 * Math.PI * random();
+    out[i] = radius * Math.cos(angle);
+    out[i + 1] = radius * Math.sin(angle);
+  }
+  return out;
+}
+async function toObjectUrl(chw) {
+  const plane = IMAGE_SIZE * IMAGE_SIZE;
+  const canvas = new OffscreenCanvas(IMAGE_SIZE, IMAGE_SIZE);
+  const ctx = canvas.getContext('2d');
+  const img = ctx.createImageData(IMAGE_SIZE, IMAGE_SIZE);
+  for (let p = 0; p < plane; p++) {
+    for (let c = 0; c < 3; c++) {
+      const v = Math.max(-1, Math.min(1, chw[c * plane + p])) * 127.5 + 128;
+      img.data[p * 4 + c] = Math.min(255, Math.floor(v));
+    }
+    img.data[p * 4 + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const blob = await canvas.convertToBlob({ type: 'image/webp', quality: 0.92 });
+  return URL.createObjectURL(blob);
+}
+
+class Painter {
+  constructor(ort, session, tokenizer) { this.ort = ort; this.session = session; this.tokenizer = tokenizer; }
+  static async load(onProgress, onCompile) {
+    const ort = await import(ORT_URL);
+    ort.env.wasm.numThreads = 1; // no cross-origin isolation needed
+    ort.env.logLevel = 'error';
+    const files = ['minit2i.onnx', 'minit2i.onnx.data', 'vocab.json'];
+    const sizes = await Promise.all(files.map((f) => cachedSize(MODEL_BASE + f)));
+    const total = sizes.reduce((a, b) => a + b, 0);
+    const loaded = files.map(() => 0);
+    const report = () => onProgress({ loaded: loaded.reduce((a, b) => a + b, 0), total });
+    const [graph, weights, vocab] = await Promise.all(
+      files.map((f, i) => fetchCached(MODEL_BASE + f, (n) => { loaded[i] = n; report(); })),
+    );
+    onCompile();
+    const tokenizer = new T5Tokenizer(JSON.parse(new TextDecoder().decode(vocab)));
+    const session = await ort.InferenceSession.create(graph, {
+      executionProviders: ['webgpu'],
+      externalData: [{ path: 'minit2i.onnx.data', data: weights }],
+    });
+    return new Painter(ort, session, tokenizer);
+  }
+  async paint(prompt, seed) {
+    const { Tensor } = this.ort;
+    const start = performance.now();
+    const { ids, mask } = this.tokenizer.encodePadded(prompt, PROMPT_LENGTH);
+    const { image } = await this.session.run({
+      input_ids: new Tensor('int64', ids, [1, PROMPT_LENGTH]),
+      attention_mask: new Tensor('int64', mask, [1, PROMPT_LENGTH]),
+      noise: new Tensor('float32', gaussianNoise(seed), [1, 3, IMAGE_SIZE, IMAGE_SIZE]),
+    });
+    const pixels = image.data;
+    image.dispose();
+    const ms = performance.now() - start;
+    return { url: await toObjectUrl(pixels), ms };
+  }
+}
+
+// ─── App state (port of +page.svelte, without the example prompts and sample pictures) ───
+const FRAME_LIMIT = 16;
+const PAUSE_MS = 600;
+const $ = (id) => document.getElementById(id);
+const el = {
+  prompt: $('prompt'), mirror: $('mirror'), sentence: $('sentence'), film: $('film'), filmEmpty: $('film-empty'),
+  newBtn: $('new-btn'), chip: $('status-chip'), heroImg: $('hero-img'), heroEmpty: $('hero-empty'),
+  emptyTitle: $('empty-title'), emptySub: $('empty-sub'), meter: $('meter'), meterFill: $('meter-fill'),
+  alert: $('alert'), alertText: $('alert-text'), caption: $('caption'), rTime: $('r-time'),
+};
+
+let status = { kind: 'loading', progress: null, compiling: false };
+let frames = [];
+let current = null;
+let painting = false;
+let painter = null;
+let nextKey = 0;
+let seed = randomSeed();
+let wanted = null;
+let debounce;
+let lastAsked = '';
+let draining = Promise.resolve();
+
+function randomSeed() { return Math.floor(Math.random() * 2 ** 31); }
+const ready = () => status.kind === 'ready';
+const seconds = (ms) => t('took')((ms / 1000).toFixed(1).replace('.', lang === 'pl' ? ',' : '.'));
+
+function labelFor(prev, next) {
+  if (prev && next.startsWith(prev)) return next.slice(prev.length).replace(/^[\s,.;]+/, '') || next;
+  return next;
+}
+function sharedWords(a, b) {
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  if (i === b.length || i === a.length) return b.slice(0, i);
+  return b.slice(0, b.lastIndexOf(' ', i) + 1);
+}
+function describeError(err) {
+  const text = err instanceof Error ? err.message : String(err);
+  if (/webgpu|adapter|device|gpu/i.test(text)) return t('errGpu');
+  if (/quota|memory|allocation/i.test(text)) return t('errMem');
+  return t('errOther');
+}
+
+// ─── render ───
+function renderMirror() {
+  const text = el.prompt.value;
+  const len = text.length;
+  el.sentence.className = 'sentence ' + (len < 60 ? 'xl' : len < 110 ? 'lg' : len < 180 ? 'md' : 'sm');
+  el.mirror.textContent = '';
+  if (!text) {
+    const ph = document.createElement('span');
+    ph.className = 'placeholder';
+    ph.textContent = ready() ? t('phReady') : t('phLoading');
+    el.mirror.append(ph);
+    return;
+  }
+  const painted = sharedWords(current ? current.prompt : '', text);
+  const done = document.createElement('span');
+  done.textContent = painted;
+  const pending = document.createElement('em');
+  pending.textContent = text.slice(painted.length);
+  el.mirror.append(done, pending, '​');
+}
+
+function renderStatus() {
+  const k = status.kind;
+  el.chip.className = 'chip' + (k === 'error' || k === 'unsupported' ? ' red' : painting ? ' yellow' : k === 'ready' ? ' green' : '');
+  el.chip.textContent = k === 'loading' ? t('stLoading') : k === 'unsupported' ? t('stUnsupported') : k === 'error' ? t('stError') : painting ? t('stPainting') : t('stReady');
+  el.newBtn.disabled = !ready();
+  el.prompt.disabled = k === 'unsupported';
+
+  const showImg = !!current;
+  el.heroImg.hidden = !showImg;
+  el.heroEmpty.hidden = showImg;
+  if (!showImg) {
+    el.meter.hidden = k !== 'loading';
+    if (k === 'loading') {
+      el.emptyTitle.textContent = t('loadTitle');
+      const p = status.progress;
+      const totalMB = p?.total ? Math.round(p.total / 1e6) : MODEL_MB;
+      const loadedMB = p ? Math.min(Math.round(p.loaded / 1e6), totalMB) : 0;
+      const pct = status.compiling ? 100 : Math.min(100, (100 * loadedMB) / totalMB);
+      el.meterFill.style.width = pct + '%';
+      el.meter.setAttribute('aria-valuenow', String(Math.round(pct)));
+      el.emptySub.textContent = status.compiling ? t('loadCompile') : p ? t('loadSub')(loadedMB, totalMB) : t('loadSubStart');
+    } else if (k === 'ready') {
+      el.emptyTitle.textContent = t('readyTitle');
+      el.emptySub.textContent = t('readySub');
+    } else {
+      el.emptyTitle.textContent = t('pictureH');
+      el.emptySub.textContent = '';
+    }
+  }
+  const msg = k === 'unsupported' ? t('errUnsupported') : k === 'error' ? status.message : '';
+  el.alert.hidden = !msg;
+  el.alertText.textContent = msg;
+  el.caption.textContent = current ? `„${current.prompt}” · ${seconds(current.ms)}` : '';
+  if (lang === 'en' && current) el.caption.textContent = `“${current.prompt}” · ${seconds(current.ms)}`;
+  el.rTime.textContent = current ? seconds(current.ms) : '–';
+  // DOM contract for automated checks
+  const d = document.querySelector('main').dataset;
+  d.status = painting ? 'painting' : k;
+  d.frames = String(frames.length);
+  d.current = current ? current.prompt : '';
+  d.ms = current ? String(Math.round(current.ms)) : '';
+}
+
+function renderFilm(scroll) {
+  el.film.querySelectorAll('.frame-btn').forEach((b) => b.remove());
+  el.filmEmpty.hidden = frames.length > 0;
+  for (const f of frames) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'frame-btn' + (f === current ? ' on' : '');
+    b.title = f.prompt;
+    b.setAttribute('role', 'listitem');
+    if (f === current) b.setAttribute('aria-current', 'true');
+    const img = document.createElement('img');
+    img.src = f.url;
+    img.alt = f.prompt;
+    const s = document.createElement('span');
+    s.textContent = f.label;
+    b.append(img, s);
+    b.addEventListener('click', () => open(f));
+    el.film.append(b);
+  }
+  if (scroll) el.film.scrollTo({ left: el.film.scrollWidth, behavior: 'smooth' });
+}
+
+function renderHero(fresh) {
+  if (!current) return;
+  el.heroImg.src = current.url;
+  el.heroImg.alt = current.prompt;
+  el.heroImg.classList.remove('fresh');
+  if (fresh) { void el.heroImg.offsetWidth; el.heroImg.classList.add('fresh'); }
+}
+
+// ─── painting queue: latest request wins ───
+function request() {
+  const text = el.prompt.value.trim();
+  if (!text || !ready()) return;
+  const key = `${seed}:${text}`;
+  if (key === lastAsked) return;
+  lastAsked = key;
+  wanted = { prompt: text, seed };
+  if (!painting) draining = drain();
+}
+async function drain() {
+  painting = true;
+  renderStatus();
+  while (wanted && painter) {
+    const job = wanted;
+    wanted = null;
+    try {
+      const result = await painter.paint(job.prompt, job.seed);
+      show(job.prompt, result.url, result.ms);
+    } catch (err) {
+      console.error(err);
+      lastAsked = '';
+      status = { kind: 'error', message: describeError(err) };
+    }
+  }
+  painting = false;
+  renderStatus();
+}
+function show(text, url, ms) {
+  const last = frames.at(-1);
+  const sameAsLast = last?.prompt === text;
+  const frame = { key: nextKey++, prompt: text, label: sameAsLast ? last.label : labelFor(last?.prompt ?? '', text), url, ms };
+  const kept = sameAsLast ? frames.slice(0, -1) : frames;
+  const next = [...kept, frame].slice(-FRAME_LIMIT);
+  const dropped = frames.filter((f) => !next.includes(f));
+  current = frame;
+  frames = next;
+  for (const f of dropped) URL.revokeObjectURL(f.url);
+  renderHero(true);
+  renderFilm(true);
+  renderMirror();
+  renderStatus();
+}
+function open(frame) {
+  if (frame === current) return;
+  current = frame;
+  el.prompt.value = frame.prompt;
+  renderHero(true);
+  renderFilm(false);
+  renderMirror();
+  renderStatus();
+}
+async function startOver() {
+  if (!ready()) return;
+  clearTimeout(debounce);
+  request();
+  await draining;
+  seed = randomSeed();
+  el.prompt.value = '';
+  renderMirror();
+  el.prompt.focus();
+}
+
+el.prompt.addEventListener('input', () => {
+  renderMirror();
+  clearTimeout(debounce);
+  debounce = setTimeout(request, PAUSE_MS);
+});
+el.prompt.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' || e.shiftKey || e.isComposing) return;
+  e.preventDefault();
+  void startOver();
+});
+el.newBtn.addEventListener('click', () => void startOver());
+
+// ─── language ───
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.title = t('docTitle');
+  document.querySelectorAll('[data-i18n]').forEach((n) => { n.textContent = t(n.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-aria]').forEach((n) => n.setAttribute('aria-label', t(n.dataset.i18nAria)));
+  document.querySelectorAll('[data-lang]').forEach((b) => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+    b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+  });
+  renderMirror();
+  renderStatus();
+}
+document.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => {
+  lang = b.dataset.lang;
+  localStorage.setItem('imagine-lang', lang);
+  applyLang();
+}));
+
+// ─── init ───
+applyLang();
+if (!('gpu' in navigator)) {
+  status = { kind: 'unsupported' };
+  renderStatus();
+} else {
+  Painter.load(
+    (progress) => { status = { kind: 'loading', progress, compiling: false }; renderStatus(); },
+    () => { status = { ...status, compiling: true }; renderStatus(); },
+  ).then((p) => {
+    painter = p;
+    status = { kind: 'ready' };
+    renderMirror();
+    renderStatus();
+    request(); // paint whatever was typed while the model loaded
+  }).catch((err) => {
+    console.error(err);
+    status = { kind: 'error', message: describeError(err) };
+    renderStatus();
+  });
+}
+
+// ─── Reveal ───
+const BRAND_FONTS = ['400 1em Outfit', '700 1em Outfit', '400 1em "IBM Plex Sans"', '600 1em "IBM Plex Sans"', '400 1em "Roboto Mono"'];
+Promise.race([
+  Promise.all(BRAND_FONTS.map((f) => document.fonts.load(f).catch(() => null))),
+  new Promise((r) => setTimeout(r, 1500)),
+]).then(() => document.documentElement.classList.add('app-ready'));
+</script>
+</body>
+</html>

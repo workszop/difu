@@ -71,7 +71,7 @@ if (ONLY === 'all' || ONLY === 'gen') {
   check('all cases: first/last frames decode in browser', bad.length === 0, bad.slice(0, 3).join(','));
   // language
   await page.click('[data-lang=en]');
-  check('EN switch', await page.evaluate(() => document.documentElement.lang === 'en' && document.querySelector('.app-title').textContent === 'From noise to picture'));
+  check('EN switch', await page.evaluate(() => document.documentElement.lang === 'en' && document.querySelector('.edu-app-title').textContent === 'From noise to picture'));
   await page.click('[data-lang=pl]');
   check('no console errors (gen)', errors.length === 0, errors.join(' | '));
   await ctx.close();
